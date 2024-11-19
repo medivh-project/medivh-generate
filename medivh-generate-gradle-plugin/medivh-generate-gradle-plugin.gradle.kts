@@ -1,9 +1,7 @@
 plugins {
     kotlin("jvm")
+    `java-gradle-plugin`
 }
-
-group = "tech.medivh"
-version = "0.2.3"
 
 repositories {
     mavenCentral()

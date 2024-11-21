@@ -1,4 +1,4 @@
-package com.zhonghaiwenda.cryptolabs.gradle.plugin.generator
+package tech.medivh.generate.core
 
 import java.io.File
 

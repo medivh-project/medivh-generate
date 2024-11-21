@@ -1,7 +1,9 @@
-package com.zhonghaiwenda.cryptolabs.gradle.plugin.generator
+package tech.medivh.generate.core.env
 
 import com.zhonghaiwenda.cryptolabs.gradle.plugin.generator.filter.TableFilter
 import com.zhonghaiwenda.cryptolabs.gradle.plugin.generator.filter.TemplateFilter
+import tech.medivh.generate.core.GenerateReporter
+import tech.medivh.generate.core.TemplateProvider
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -12,9 +14,15 @@ import java.time.format.DateTimeFormatter
  **/
 class GeneratorContext {
 
+    val templateProvider :TemplateProvider = TODO()
+
+    val writeRule:WriteRule = TODO()
+
     val tableFilters = mutableListOf<TableFilter>()
 
     val templateFilters = mutableListOf<TemplateFilter>()
+
+
 
     lateinit var reporter: GenerateReporter
 

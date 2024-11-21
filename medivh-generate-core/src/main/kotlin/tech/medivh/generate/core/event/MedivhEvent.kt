@@ -1,7 +1,7 @@
 package tech.medivh.generate.core.event
 
+import tech.medivh.generate.core.WriteRule
 import tech.medivh.generate.core.env.TemplateContext
-import tech.medivh.generate.core.env.WriteRule
 import java.io.File
 
 

@@ -1,4 +1,6 @@
-package tech.medivh.generate.core
+package tech.medivh.generate.core.provider
+
+import tech.medivh.generate.core.Template
 
 
 /**

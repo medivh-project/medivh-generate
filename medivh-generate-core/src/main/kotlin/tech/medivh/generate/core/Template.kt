@@ -2,7 +2,6 @@ package tech.medivh.generate.core
 
 import org.apache.velocity.app.Velocity
 import tech.medivh.generate.core.env.TemplateContext
-import tech.medivh.generate.core.env.WriteRule
 import tech.medivh.generate.core.event.WriteRuleNotAllowEvent
 import java.io.StringWriter
 

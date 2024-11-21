@@ -1,4 +1,4 @@
-package com.zhonghaiwenda.cryptolabs.gradle.plugin.generator.filter
+package generator.filter
 
 import com.zhonghaiwenda.cryptolabs.gradle.plugin.generator.VmTemplate
 import com.zhonghaiwenda.cryptolabs.gradle.plugin.generator.bean.Table

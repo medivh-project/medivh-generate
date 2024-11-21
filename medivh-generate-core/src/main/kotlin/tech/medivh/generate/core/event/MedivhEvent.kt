@@ -1,11 +1,23 @@
 package tech.medivh.generate.core.event
 
-import java.util.EventObject
-import java.util.*
+import tech.medivh.generate.core.env.TemplateContext
+import tech.medivh.generate.core.env.WriteRule
+import java.io.File
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class MedivhEvent(source: Any) : EventObject(source) {
-}
+interface MedivhEvent
+
+
+/**
+ *
+ * target file is exist, and will be covered
+ * @param coveredFile the file will be covered
+ * @param backFile the file will be backup
+ *
+ **/
+data class CoverEvent(val coveredFile: File, val backFile: File) : MedivhEvent
+
+data class WriteRuleNotAllowEvent(val context: TemplateContext, val rule: WriteRule) : MedivhEvent

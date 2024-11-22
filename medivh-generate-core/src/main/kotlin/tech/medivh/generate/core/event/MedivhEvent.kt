@@ -15,11 +15,15 @@ abstract class TemplateEvent(val context: TemplateContext) : MedivhEvent
 /**
  *
  * target file is exist, and will be covered
- * @param coveredFile the file will be covered
- * @param backFile the file will be backup
+ * @param targetFile the file will be covered
  *
  **/
-data class CoverEvent(val coveredFile: File, val backFile: File) : MedivhEvent
+class BeforeCoverEvent(val targetFile: File, context: TemplateContext) : TemplateEvent(context)
+
+/**
+ * target file is exist and will be skipped
+ */
+class SkipFileEvent(val targetFile: File, context: TemplateContext) : TemplateEvent(context)
 
 class NotAllowEvent(context: TemplateContext) : TemplateEvent(context)
 

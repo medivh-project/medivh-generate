@@ -37,7 +37,8 @@ class MySQLTemplateProvider(val config: MySQLConfiguration) : TemplateProvider {
             ?: throw IllegalStateException("template dir not found")
 
         return templateDir.listFiles { file -> file.extension == "vm" }
-            ?.flatMap { vmFile -> tableInfos.map { MySQLTemplateContext(vmFile, it, config) } }
+            ?.map { it.name }
+            ?.flatMap { vmFileName -> tableInfos.map { MySQLTemplateContext(vmFileName, it, config) } }
             ?.map { Template(it) }
             ?.toList() ?: emptyList()
     }

@@ -13,7 +13,7 @@ interface TemplateContext : Context, Bus {
     /**
      * the velocity template file
      */
-    val vmFile: File
+    val vmFileName: String
 
     fun allow(): Boolean
 

@@ -1,10 +1,14 @@
 package tech.medivh.generate.core
 
 import org.apache.velocity.app.Velocity
+import tech.medivh.generate.core.env.GlobalProperties
 import tech.medivh.generate.core.env.TemplateContext
+import tech.medivh.generate.core.event.BeforeCoverEvent
 import tech.medivh.generate.core.event.NotAllowEvent
+import tech.medivh.generate.core.event.SkipFileEvent
 import tech.medivh.generate.core.event.WriteEvent
 import java.io.StringWriter
+import java.util.*
 
 
 /**
@@ -17,24 +21,29 @@ class Template(private val context: TemplateContext) {
             return context.publishEvent(NotAllowEvent(context))
         }
         StringWriter().use {
-            check(context.vmFile.exists())
-            val tpl = Velocity.getTemplate(context.vmFile.path, "UTF-8")
+            val prop = Properties()
+            prop["file.resource.loader.class"] = "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
+            Velocity.init(prop)
+            val tpl = Velocity.getTemplate(
+                "${GlobalProperties.DEFAULT_TEMPLATE_DIR}/${context.vmFileName}",
+                GlobalProperties.DEFAULT_TEMPLATE_ENCODING
+            )
             tpl.merge(context, it)
             val targetFile = context.targetFile(context)
             if (!targetFile.exists()) {
                 targetFile.writeText(it.toString())
-                context.publishEvent(WriteEvent(context))
-                return
+                return context.publishEvent(WriteEvent(context))
             }
             if (context.overwrite()) {
-                TODO("写入")
-            } else {
-                TODO("跳过")
+                context.publishEvent(BeforeCoverEvent(targetFile, context))
+                return targetFile.writeText(it.toString())
             }
+            context.publishEvent(SkipFileEvent(targetFile, context))
         }
     }
 
     override fun toString(): String {
         return "Template: $context"
     }
+
 }

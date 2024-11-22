@@ -5,6 +5,7 @@ plugins {
 }
 
 val versionsFile: String by properties
+
 val rootVersionFile = file(versionsFile)
 
 allprojects {

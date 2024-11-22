@@ -1,6 +1,5 @@
 package tech.medivh.generate.core.provider.db
 
-import tech.medivh.generate.core.env.TemplateContext
 import java.io.File
 
 
@@ -12,6 +11,6 @@ class MySQLConfiguration(
     var user: String,
     var password: String,
     var overwrite: Boolean = false,
-    var targetFileAction: (TemplateContext) -> File,
+    var targetFileAction: (MySQLTemplateContext) -> File,
     var driver: String = "com.mysql.cj.jdbc.Driver"
 )

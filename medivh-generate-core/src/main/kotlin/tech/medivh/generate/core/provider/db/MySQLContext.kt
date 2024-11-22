@@ -9,22 +9,22 @@ import java.io.File
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
 class MySQLTemplateContext(
-    vmFile: File,
+    vmFileName: String,
     val table: Table,
     private val config: MySQLConfiguration
-) : AbstractTemplateContext(vmFile) {
+) : AbstractTemplateContext(vmFileName) {
 
     override fun overwrite(): Boolean {
         return config.overwrite
     }
 
     override fun targetFile(template: TemplateContext): File {
-        return config.targetFileAction.invoke(template)
+        return config.targetFileAction.invoke(template as MySQLTemplateContext)
     }
 
 
     override fun toString(): String {
-        return "(table=${table.tableName}, vmFile=${vmFile.name})"
+        return "(table=${table.tableName}, vmFile=${vmFileName})"
     }
 
 }

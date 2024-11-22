@@ -2,13 +2,12 @@ package tech.medivh.generate.core.env
 
 import tech.medivh.generate.core.event.Bus
 import tech.medivh.generate.core.event.EventPublisher
-import java.io.File
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class AbstractTemplateContext(override val vmFile: File) : TemplateContext, Bus by EventPublisher() {
+abstract class AbstractTemplateContext(override val vmFileName: String) : TemplateContext, Bus by EventPublisher() {
 
     protected val vmContext = mutableMapOf<String, Any>()
 

@@ -2,6 +2,8 @@ package tech.medivh.generate.core.event
 
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.mockito.Mockito.mock
+import tech.medivh.generate.core.env.TemplateContext
 import java.io.File
 
 
@@ -11,9 +13,9 @@ class EventPublisherTest {
     fun testRegister() {
         val bus = EventPublisher()
         bus.addListener(TestCoverListener())
-        bus.publishEvent(CoverEvent(File("a"), File("b")))
+        bus.publishEvent(BeforeCoverEvent(File("a"), mock()))
         assert(TestCoverListener.count == 1)
-        bus.publishEvent(CoverEvent(File("a"), File("b")))
+        bus.publishEvent(BeforeCoverEvent(File("a"), mock()))
         assert(TestCoverListener.count == 2)
     }
 
@@ -21,9 +23,9 @@ class EventPublisherTest {
     fun testDynamic() {
         val bus = EventPublisher()
         bus.addListener(DynamicListener())
-        bus.publishEvent(CoverEvent(File("a"), File("b")))
+        bus.publishEvent(BeforeCoverEvent(File("a"), mock()))
         assert(DynamicListener.count == 1)
-        bus.publishEvent(CoverEvent(File("a"), File("b")))
+        bus.publishEvent(BeforeCoverEvent(File("a"), mock()))
         assert(DynamicListener.count == 2)
     }
 
@@ -37,7 +39,7 @@ class EventPublisherTest {
     class ErrorListener {
 
         @Listen
-        fun lis(event: CoverEvent, arg: Int) {
+        fun lis(event: BeforeCoverEvent, arg: Int) {
             println("error")
         }
 
@@ -46,7 +48,7 @@ class EventPublisherTest {
     class DynamicListener {
 
         @Listen
-        fun lis(event: CoverEvent) {
+        fun lis(event: BeforeCoverEvent) {
             count++
         }
 
@@ -55,8 +57,8 @@ class EventPublisherTest {
         }
     }
 
-    class TestCoverListener : EventListener<CoverEvent> {
-        override fun onEvent(event: CoverEvent) {
+    class TestCoverListener : EventListener<BeforeCoverEvent> {
+        override fun onEvent(event: BeforeCoverEvent) {
             count++
         }
 

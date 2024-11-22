@@ -29,4 +29,6 @@ class NotAllowEvent(context: TemplateContext) : TemplateEvent(context)
 
 class WriteEvent(context: TemplateContext) : TemplateEvent(context)
 
+class BeforeMergeTemplateEvent(context: TemplateContext) : TemplateEvent(context)
+
 

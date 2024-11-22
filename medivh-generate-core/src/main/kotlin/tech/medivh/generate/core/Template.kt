@@ -3,10 +3,7 @@ package tech.medivh.generate.core
 import org.apache.velocity.app.Velocity
 import tech.medivh.generate.core.env.GlobalProperties
 import tech.medivh.generate.core.env.TemplateContext
-import tech.medivh.generate.core.event.BeforeCoverEvent
-import tech.medivh.generate.core.event.NotAllowEvent
-import tech.medivh.generate.core.event.SkipFileEvent
-import tech.medivh.generate.core.event.WriteEvent
+import tech.medivh.generate.core.event.*
 import java.io.StringWriter
 import java.util.*
 
@@ -21,13 +18,11 @@ class Template(private val context: TemplateContext) {
             return context.publishEvent(NotAllowEvent(context))
         }
         StringWriter().use {
-            val prop = Properties()
-            prop["file.resource.loader.class"] = "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
-            Velocity.init(prop)
             val tpl = Velocity.getTemplate(
                 "${GlobalProperties.DEFAULT_TEMPLATE_DIR}/${context.vmFileName}",
                 GlobalProperties.DEFAULT_TEMPLATE_ENCODING
             )
+            context.publishEvent(BeforeMergeTemplateEvent(context))
             tpl.merge(context, it)
             val targetFile = context.targetFile(context)
             if (!targetFile.exists()) {

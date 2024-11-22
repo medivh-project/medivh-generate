@@ -1,6 +1,8 @@
 package tech.medivh.generate.core
 
+import org.apache.velocity.app.Velocity
 import tech.medivh.generate.core.env.GeneratorContext
+import java.util.*
 
 
 /**
@@ -8,6 +10,12 @@ import tech.medivh.generate.core.env.GeneratorContext
  **/
 object MedivhGenerator {
 
+
+    init {
+        val prop = Properties()
+        prop["file.resource.loader.class"] = "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader"
+        Velocity.init(prop)
+    }
 
     fun generateCode(context: GeneratorContext) {
         context.templateProvider.getTemplates().forEach { template ->

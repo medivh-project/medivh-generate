@@ -33,4 +33,8 @@ class Template(private val rule: WriteRule, private val context: TemplateContext
             }
         }
     }
+
+    override fun toString(): String {
+        return "vm file: ${context.vmFile.name}"
+    }
 }

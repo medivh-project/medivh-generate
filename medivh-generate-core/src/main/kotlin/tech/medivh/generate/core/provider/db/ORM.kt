@@ -11,7 +11,7 @@ typealias MedivhTable = tech.medivh.generate.core.provider.db.Table
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-object Tables : Table<TableDesc>("tables") {
+object Tables : Table<TableDesc>("tables", schema = "information_schema") {
     val createTime = datetime("CREATE_TIME").bindTo { it.createTime }
     val engine = varchar("ENGINE").bindTo { it.engine }
     val name = varchar("TABLE_NAME").bindTo { it.tableName }

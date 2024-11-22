@@ -1,5 +1,6 @@
 package tech.medivh.generate.core.env
 
+import tech.medivh.generate.core.event.Bus
 import tech.medivh.generate.core.event.EventPublisher
 import java.io.File
 
@@ -7,29 +8,34 @@ import java.io.File
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class AbstractTemplateContext(override val vmFile: File) : TemplateContext {
+abstract class AbstractTemplateContext(override val vmFile: File) : TemplateContext, Bus by EventPublisher() {
 
-    protected val context = mutableMapOf<String, Any>()
+    protected val vmContext = mutableMapOf<String, Any>()
 
-    override val bus: EventPublisher = EventPublisher()
+    /**
+     * default allow all
+     */
+    override fun allow(): Boolean {
+        return true
+    }
 
     override fun put(key: String, value: Any): Any {
-        return context.put(key, value)!!
+        return vmContext.put(key, value)!!
     }
 
     override fun get(key: String): Any? {
-        return context[key]
+        return vmContext[key]
     }
 
     override fun containsKey(key: String): Boolean {
-        return context.containsKey(key)
+        return vmContext.containsKey(key)
     }
 
     override fun getKeys(): Array<String> {
-        return context.keys.toTypedArray()
+        return vmContext.keys.toTypedArray()
     }
 
     override fun remove(key: String): Any? {
-        return context.remove(key)
+        return vmContext.remove(key)
     }
 }

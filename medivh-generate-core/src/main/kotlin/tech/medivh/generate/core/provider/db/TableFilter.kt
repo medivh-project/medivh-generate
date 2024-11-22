@@ -6,5 +6,5 @@ package tech.medivh.generate.core.provider.db
  **/
 fun interface TableFilter {
 
-    fun allow(table:Table,): Boolean
+    fun allow(table: Table): Boolean
 }

@@ -14,6 +14,10 @@ class MySQLTemplateContext(
     private val config: MySQLConfiguration
 ) : AbstractTemplateContext(vmFileName) {
 
+    init {
+        this.publisher.addListener(MySQLFillListener())
+    }
+
     override fun overwrite(): Boolean {
         return config.overwrite
     }

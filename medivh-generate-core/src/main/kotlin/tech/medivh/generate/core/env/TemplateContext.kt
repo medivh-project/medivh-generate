@@ -28,4 +28,9 @@ interface TemplateContext : Context, Bus {
      */
     fun targetFile(template: TemplateContext): File
 
+    /**
+     * extension context
+     */
+    fun putAll(properties: Map<String, Any>)
+
 }

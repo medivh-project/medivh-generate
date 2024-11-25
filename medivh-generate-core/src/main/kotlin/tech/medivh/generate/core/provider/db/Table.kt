@@ -10,9 +10,7 @@ data class Table(
     val engine: String,
     val tableName: String,
     val db: String,
-    val comments: String?,
+    val comment: String?,
     val columns: MutableList<Column> = mutableListOf()
-) {
-
-}
+)
 

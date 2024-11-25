@@ -7,7 +7,10 @@ import tech.medivh.generate.core.event.EventPublisher
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class AbstractTemplateContext(override val vmFileName: String) : TemplateContext, Bus by EventPublisher() {
+abstract class AbstractTemplateContext(
+    override val vmFileName: String,
+    protected val publisher: Bus = EventPublisher()
+) : TemplateContext, Bus by publisher {
 
     protected val vmContext = mutableMapOf<String, Any>()
 
@@ -36,5 +39,9 @@ abstract class AbstractTemplateContext(override val vmFileName: String) : Templa
 
     override fun remove(key: String): Any? {
         return vmContext.remove(key)
+    }
+
+    override fun putAll(properties: Map<String, Any>) {
+        return vmContext.putAll(properties)
     }
 }

@@ -16,7 +16,7 @@ object Tables : Table<TableDesc>("tables", schema = "information_schema") {
     val engine = varchar("ENGINE").bindTo { it.engine }
     val name = varchar("TABLE_NAME").bindTo { it.tableName }
     val db = varchar("TABLE_SCHEMA").bindTo { it.db }
-    val comments = varchar("TABLE_COMMENT").bindTo { it.comments }
+    val comments = varchar("TABLE_COMMENT").bindTo { it.comment }
 }
 
 interface TableDesc : Entity<TableDesc> {
@@ -24,28 +24,31 @@ interface TableDesc : Entity<TableDesc> {
     val engine: String
     val tableName: String
     val db: String
-    val comments: String?
+    val comment: String?
 
     fun table(): MedivhTable {
-        return MedivhTable(createTime, engine, tableName, db, comments)
+        return MedivhTable(createTime, engine, tableName, db, comment)
     }
 }
 
 object Columns : Table<Column>("columns", schema = "information_schema") {
-    val name = varchar("TABLE_NAME").bindTo { it.tableName }
+    // tableName is super field name
+    val table_name = varchar("TABLE_NAME").bindTo { it.tableName }
     val db = varchar("TABLE_SCHEMA")
-    val columnName = varchar("COLUMN_NAME").bindTo { it.columnName }
+    val columnName = varchar("COLUMN_NAME").bindTo { it.name }
     val notNull = varchar("IS_NULLABLE").transform({ it == "NO" }, { if (it) "NO" else "YES" }).bindTo { it.notNull }
     val dataType = varchar("DATA_TYPE").bindTo { it.dataType }
     val columnKey = varchar("COLUMN_KEY").bindTo { it.columnKey }
-    val columnComment = varchar("COLUMN_COMMENT").bindTo { it.columnComment }
+    val comment = varchar("COLUMN_COMMENT").bindTo { it.comment }
+    val pk = varchar("COLUMN_KEY").transform({ it == "PRI" }, { if (it) "PRI" else "" }).bindTo { it.pk }
 }
 
 interface Column : Entity<Column> {
     val tableName: String
-    val columnName: String
+    val name: String
     val notNull: Boolean
+    val pk: Boolean
     val dataType: String
     val columnKey: String
-    val columnComment: String?
+    val comment: String?
 }

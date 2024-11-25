@@ -38,7 +38,6 @@ object Columns : Table<Column>("columns", schema = "information_schema") {
     val columnName = varchar("COLUMN_NAME").bindTo { it.name }
     val notNull = varchar("IS_NULLABLE").transform({ it == "NO" }, { if (it) "NO" else "YES" }).bindTo { it.notNull }
     val dataType = varchar("DATA_TYPE").bindTo { it.dataType }
-    val columnKey = varchar("COLUMN_KEY").bindTo { it.columnKey }
     val comment = varchar("COLUMN_COMMENT").bindTo { it.comment }
     val pk = varchar("COLUMN_KEY").transform({ it == "PRI" }, { if (it) "PRI" else "" }).bindTo { it.pk }
 }
@@ -49,6 +48,5 @@ interface Column : Entity<Column> {
     val notNull: Boolean
     val pk: Boolean
     val dataType: String
-    val columnKey: String
     val comment: String?
 }

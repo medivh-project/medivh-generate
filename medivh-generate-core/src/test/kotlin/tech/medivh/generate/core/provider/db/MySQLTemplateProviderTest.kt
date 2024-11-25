@@ -1,11 +1,17 @@
 package tech.medivh.generate.core.provider.db
 
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import tech.medivh.generate.core.MedivhGenerator
 import java.io.File
 
 
 class MySQLTemplateProviderTest {
 
+    @BeforeEach
+    fun init(){
+        MedivhGenerator
+    }
 
     @Test
     fun testSelectTable() {

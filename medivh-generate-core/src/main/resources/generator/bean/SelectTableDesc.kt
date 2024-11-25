@@ -26,7 +26,7 @@ data class SelectTableDesc(
             return Table(
                 tableName = tableName,
                 comments = tableComment,
-                pk = columns.find { it.pk }?: columns.first(),
+                pk = columns.find { it.pk } ?: columns.first(),
                 columns = columns,
                 className = snakeToCamel(tableName).uppercaseFirstChar(),
                 classname = snakeToCamel(tableName),

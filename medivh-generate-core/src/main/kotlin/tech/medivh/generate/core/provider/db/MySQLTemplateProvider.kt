@@ -27,7 +27,7 @@ class MySQLTemplateProvider(val config: MySQLConfiguration) : TemplateProvider {
     private val Database.columns get() = this.sequenceOf(Columns)
 
     override fun getTemplates(): List<Template> {
-        val columns = database.columns.filter { it.db eq database.name }.groupBy({ it.tableName }, { it.column() })
+        val columns = database.columns.filter { it.db eq database.name }.groupBy { it.tableName }
         val tableInfos = database.tables
             .filter { it.db eq database.name }
             .map { it.table().apply { this.columns.addAll(columns[it.tableName] ?: emptyList()) } }

@@ -8,24 +8,25 @@ package tech.medivh.generate.core
 fun String.convert(targetStyle: NameStyle): String {
     return when (targetStyle) {
         NameStyle.CAMEL -> this.toCamelCase()
-        NameStyle.UNDERLINE -> this.toUnderlineCase()
+        NameStyle.UNDERLINE -> this.toSnakeCase()
         NameStyle.HUMP -> this.toHumpCase()
     }
 }
 
+
 private fun String.toCamelCase(): String {
-    return this.toLowerCase().split("_").mapIndexed { index, part ->
-        if (index == 0) part else part.replaceFirstChar { it.uppercaseChar() }
-    }.joinToString("")
+    return toHumpCase().replaceFirstChar { char -> char.lowercase() }
 }
 
-private fun String.toUnderlineCase(): String {
-    return this.split("(?=[A-Z])".toRegex()).joinToString("_") { it.lowercase() }
-        .replace("__", "_")
+private fun String.toSnakeCase(): String {
+    return this.replace(Regex("([a-z])([A-Z])"), "$1_$2")
+        .replace(Regex("([A-Z]+)([A-Z][a-z])"), "$1_$2")
+        .lowercase()
 }
 
 private fun String.toHumpCase(): String {
-    return this.toLowerCase().split("_").joinToString("") { it.replaceFirstChar { ch -> ch.uppercaseChar() } }
+    val parts = this.split('_')
+    return parts.joinToString("") { it.replaceFirstChar { char -> char.uppercase() } }
 }
 
 enum class NameStyle {

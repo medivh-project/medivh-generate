@@ -1,6 +1,7 @@
 package com.zhonghaiwenda.cryptolabs.gradle.plugin.generator.filter
 
 import com.zhonghaiwenda.cryptolabs.gradle.plugin.generator.bean.SelectTableDesc
+import tech.medivh.generate.core.provider.db.TableFilter
 
 
 /**

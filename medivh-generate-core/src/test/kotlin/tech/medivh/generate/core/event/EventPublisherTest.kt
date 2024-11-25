@@ -3,7 +3,6 @@ package tech.medivh.generate.core.event
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.mockito.Mockito.mock
-import tech.medivh.generate.core.env.TemplateContext
 import java.io.File
 
 

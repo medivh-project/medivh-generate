@@ -31,25 +31,21 @@ interface TableDesc : Entity<TableDesc> {
     }
 }
 
-object Columns : Table<ColumnDesc>("columns", schema = "information_schema") {
+object Columns : Table<Column>("columns", schema = "information_schema") {
     val name = varchar("TABLE_NAME").bindTo { it.tableName }
     val db = varchar("TABLE_SCHEMA")
     val columnName = varchar("COLUMN_NAME").bindTo { it.columnName }
-    val nullable = varchar("IS_NULLABLE").bindTo { it.nullable }
+    val notNull = varchar("IS_NULLABLE").transform({ it == "NO" }, { if (it) "NO" else "YES" }).bindTo { it.notNull }
     val dataType = varchar("DATA_TYPE").bindTo { it.dataType }
     val columnKey = varchar("COLUMN_KEY").bindTo { it.columnKey }
     val columnComment = varchar("COLUMN_COMMENT").bindTo { it.columnComment }
 }
 
-interface ColumnDesc : Entity<ColumnDesc> {
+interface Column : Entity<Column> {
     val tableName: String
     val columnName: String
-    val nullable: String
+    val notNull: Boolean
     val dataType: String
     val columnKey: String
     val columnComment: String?
-
-    fun column(): Column {
-        return Column(tableName, columnName, nullable == "NO", dataType, columnKey, columnComment)
-    }
 }

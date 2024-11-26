@@ -7,19 +7,12 @@ import tech.medivh.generate.core.event.EventPublisher
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class AbstractTemplateContext(
-    override val vmFileName: String,
+abstract class AbstractGenerateContext(
     protected val publisher: Bus = EventPublisher()
-) : TemplateContext, Bus by publisher {
+) : GeneratorContext, Bus by publisher {
 
     protected val vmContext = mutableMapOf<String, Any>()
 
-    /**
-     * default allow all
-     */
-    override fun allow(): Boolean {
-        return true
-    }
 
     override fun put(key: String, value: Any): Any {
         return vmContext.put(key, value)!!

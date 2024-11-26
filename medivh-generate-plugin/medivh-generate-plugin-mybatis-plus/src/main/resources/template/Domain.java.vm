@@ -1,0 +1,39 @@
+package ${mainPath}.domain;
+
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+#if(${hasLocalDateTime})
+import java.time.LocalDateTime;
+#end
+#if(${hasInstant})
+import java.time.Instant;
+#end
+import lombok.Data;
+
+/**
+ * ${comments}
+ * 
+ * @author ${author}
+ */
+@Data
+@TableName("${tableName}")
+public class ${className} extends BaseEntity {
+
+#foreach ($column in $columns)
+	#if(${column.columnName} !='create_by' && $column.columnName!='create_time' && $column.columnName!='update_by' && $column.columnName!='update_time' && $column.columnName!='remark')
+	/**
+	 * $column.comments
+	 */
+	#if($column.columnName == $pk.columnName)
+@TableId
+	#end
+private $column.attrType $column.attrname;
+	#end
+
+#end
+
+}

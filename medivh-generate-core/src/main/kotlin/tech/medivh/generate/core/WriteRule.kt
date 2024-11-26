@@ -1,7 +1,7 @@
 package tech.medivh.generate.core
 
 import tech.medivh.generate.core.annotation.Reserved
-import tech.medivh.generate.core.env.TemplateContext
+import tech.medivh.generate.core.env.GeneratorContext
 import java.io.File
 
 
@@ -21,5 +21,6 @@ interface WriteRule {
     /**
      * a target file to write
      */
-    fun targetFile(template: TemplateContext): File
+    fun targetFile(template: Template, context: GeneratorContext): File
+
 }

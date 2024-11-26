@@ -8,5 +8,5 @@ import tech.medivh.generate.core.env.GeneratorContext
  **/
 fun interface ContextProvider {
 
-    fun computeContext(): GeneratorContext
+    fun computeContext(): List<GeneratorContext>
 }

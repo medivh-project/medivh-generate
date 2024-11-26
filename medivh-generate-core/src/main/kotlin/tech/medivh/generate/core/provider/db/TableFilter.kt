@@ -8,3 +8,6 @@ fun interface TableFilter {
 
     fun allow(table: Table): Boolean
 }
+
+val EnlightenedTableFilter = TableFilter { true }
+

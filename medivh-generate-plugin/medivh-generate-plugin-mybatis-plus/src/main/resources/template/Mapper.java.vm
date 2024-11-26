@@ -1,0 +1,17 @@
+package ${mainPath}.mapper;
+
+import ${mainPath}.domain.${className};
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
+
+/**
+* @author gongxuanzhangmelt@gmail.com
+*/
+@Mapper
+public interface ${className}Mapper extends BaseMapper<${className}> {
+
+}
+
+
+
+

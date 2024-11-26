@@ -1,0 +1,9 @@
+val ${classname} = {
+	#foreach ($column in $columns)
+		#if($foreach.hasNext)
+			$column.attrname : null,
+		#else
+			$column.attrname : null
+		#end
+	#end
+}

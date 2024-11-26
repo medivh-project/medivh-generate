@@ -1,0 +1,91 @@
+package ${mainPath}.controller;
+
+
+import java.util.List;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import ${mainPath}.domain.${className};
+import ${mainPath}.domain.query.${className}Query;
+import ${mainPath}.service.${className}Service;
+import com.zhonghaiwenda.cryptolabs.core.web.BaseController;
+import com.zhonghaiwenda.cryptolabs.core.web.ResultModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ */
+@RestController
+@RequestMapping("/${pathName}")
+public class ${className}Controller extends BaseController{
+
+    @Autowired
+    private ${className}Service ${classname}Service;
+
+    /**
+     * 查询${comments}列表
+     */
+    @GetMapping("/list")
+    public ResultModel<Page<${className}>> list(${className}Query query) {
+        Page<${className}> page = query.toPage();
+        Wrapper<${className}> queryWrapper = query.toQueryWrapper();
+        Page<${className}> result = ${classname}Service.page(page, queryWrapper);
+        return ResultModel.success(result);
+    }
+
+
+    /**
+     * 查询${comments}详细信息
+     */
+    @GetMapping("/info/{${pk.attrname}}")
+    public ResultModel<${className}> info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}) {
+        return ResultModel.success(${classname}Service.getById(${pk.attrname}));
+    }
+
+    /**
+     * 保存${comments}
+     */
+    @PostMapping("/save")
+    public ResultModel<${pk.attrType}> save(@RequestBody ${className} ${classname}) {
+        ${classname}Service.save(${classname});
+        return ResultModel.success(${classname}.get${pk.attrName}());
+    }
+
+    /**
+     * 修改${comments}
+     */
+    @PutMapping("/update")
+    public ResultModel<Void> update(@RequestBody ${className} ${classname}) {
+        ${classname}Service.updateById(${classname});
+        return ResultModel.success();
+    }
+
+    /**
+     * 删除${comments}
+     */
+    @DeleteMapping("/delete")
+    public ResultModel<Void> delete(@RequestBody List<Integer> ids) {
+        ${classname}Service.removeByIds(ids);
+        return ResultModel.success();
+    }
+
+    /**
+     * 删除${comments}
+     */
+    @DeleteMapping("/delete/{id}")
+    public ResultModel<Void> deleteById(@PathVariable("id") Integer id) {
+        ${classname}Service.removeById(id);
+        return ResultModel.success();
+    }
+
+}

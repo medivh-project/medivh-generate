@@ -43,4 +43,6 @@ class TableProperties(table: Table) {
      */
     var junctionTable = false
 
+    var author = System.getProperty("user.name")
+
 }

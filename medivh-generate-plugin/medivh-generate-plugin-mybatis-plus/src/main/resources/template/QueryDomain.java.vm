@@ -1,0 +1,48 @@
+package ${mainPath}.domain.query;
+
+import com.zhonghaiwenda.cryptolabs.core.web.query.BaseQuery;
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import ${mainPath}.domain.${className};
+#if(${hasBigDecimal})
+import java.math.BigDecimal;
+#end
+#if(${hasLocalDateTime})
+import java.time.LocalDateTime;
+#end
+#if(${hasInstant})
+import java.time.Instant;
+#end
+import lombok.Data;
+
+/**
+ * ${comments}
+ *
+ * @author ${author}
+ */
+@Data
+public class ${className}Query extends BaseQuery<${className}> {
+
+#foreach ($column in $columns)
+	#if(${column.columnName} !='create_by' && $column.columnName!='create_time' && $column.columnName!='update_by' && $column.columnName!='update_time' && $column.columnName!='remark')
+	/**
+	 * $column.comments
+	 */
+	#if($column.columnName == $pk.columnName)
+	#end
+private $column.attrType $column.attrname;
+	#end
+
+#end
+
+	@Override
+	public Wrapper<${className}> toQueryWrapper() {
+		return Wrappers.lambdaQuery(${className}.class)
+		#foreach ($column in $columns)
+			#if(${column.canEquals})
+				.eq($column.attrname != null, ${className}::get$column.attrName, $column.attrname)
+			#end
+		#end
+		;
+	}
+}

@@ -10,9 +10,16 @@ pluginManagement {
     }
 
 }
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
+}
 
 include(":medivh-generate-core")
 include(":medivh-generate-gradle-plugin")
+include(":medivh-generate-plugin")
+include(":medivh-generate-console")
+include(":medivh-generate-plugin:medivh-generate-plugin-mybatis")
+include(":medivh-generate-plugin:medivh-generate-plugin-mybatis-plus")
 
 rootProject.children.forEach { it.configureBuildScriptName() }
 

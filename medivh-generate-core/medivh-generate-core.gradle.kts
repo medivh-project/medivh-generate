@@ -1,12 +1,3 @@
-plugins {
-    kotlin("jvm")
-}
-
-repositories {
-    mavenCentral()
-}
-
-
 val velocityVersion: String by medivhVersion
 val ktormVersion: String by medivhVersion
 val mockitoKotlinVersion: String by medivhVersion
@@ -21,9 +12,3 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-tasks.test {
-    useJUnitPlatform()
-}
-kotlin {
-    jvmToolchain(17)
-}

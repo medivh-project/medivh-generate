@@ -6,7 +6,7 @@ import javax.lang.model.element.Modifier
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaMethodBuilder(private val javaBuilder: JavaBuilder) {
+class JavaMethodBuilder(private val javaBuilder: JavaBuilder) :ImportBuilder by javaBuilder{
     private var modifier: Modifier = Modifier.PUBLIC
     private var returnType = "void"
     private lateinit var name: String
@@ -18,20 +18,17 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) {
         return this
     }
 
-    fun modifier(modifier: String): JavaMethodBuilder {
+    fun modifier(modifier: String) = apply {
         this.modifier = Modifier.valueOf(modifier)
-        return this
     }
 
-    fun returnType(returnType: String): JavaMethodBuilder {
+    fun returnType(returnType: String) = apply {
         this.returnType = returnType
-        return this
     }
 
 
-    fun name(name: String): JavaMethodBuilder {
+    fun name(name: String) = apply {
         this.name = name
-        return this
     }
 
     fun parameters(): MethodParamBuilder {
@@ -40,9 +37,9 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) {
         }
     }
 
-    fun body(body: String): JavaMethodBuilder {
+
+    fun body(body: String) = apply {
         this.body = body
-        return this
     }
 
     fun nextMethod(): JavaMethodBuilder {

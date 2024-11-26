@@ -1,12 +1,16 @@
 package tech.medivh.generate.core.provider.build.java
 
+import java.lang.reflect.Modifier
+
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaBuilder {
+class JavaBuilder : ImportBuilder {
 
     private val imports = linkedSetOf<String>()
+
+    private var modifier: Int = Modifier.PUBLIC
 
     private lateinit var className: String
 
@@ -17,12 +21,12 @@ class JavaBuilder {
     /**
      * @param import class full name
      */
-    fun import(import: String): JavaBuilder {
+    override fun importClass(import: String): JavaBuilder {
         imports.add(import)
         return this
     }
 
-    fun import(clazz: Class<*>): JavaBuilder {
+    override fun importClass(clazz: Class<*>): JavaBuilder {
         imports.add(clazz.name)
         return this
     }
@@ -35,6 +39,17 @@ class JavaBuilder {
     fun method(): JavaMethodBuilder {
         return JavaMethodBuilder(this).apply {
             methodBuilders.add(this)
+        }
+    }
+
+    fun finalClass(): JavaBuilder {
+        this.modifier = this.modifier or Modifier.FINAL
+        return this
+    }
+
+    fun field(): JavaFieldBuilder {
+        return JavaFieldBuilder(this).apply {
+            fieldBuilders.add(this)
         }
     }
 

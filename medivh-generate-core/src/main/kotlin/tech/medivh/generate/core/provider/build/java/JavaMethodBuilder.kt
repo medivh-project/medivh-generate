@@ -1,31 +1,26 @@
 package tech.medivh.generate.core.provider.build.java
 
-import javax.lang.model.element.Modifier
+import tech.medivh.generate.core.provider.build.setDefault
+import tech.medivh.generate.core.provider.build.setPrivate
+import tech.medivh.generate.core.provider.build.setProtected
+import tech.medivh.generate.core.provider.build.setPublic
+import java.lang.reflect.Modifier
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaMethodBuilder(private val javaBuilder: JavaBuilder) :ImportBuilder by javaBuilder{
-    private var modifier: Modifier = Modifier.PUBLIC
+class JavaMethodBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by javaBuilder {
+    private var modifier: Int = Modifier.PUBLIC
     private var returnType = "void"
-    private lateinit var name: String
+    private var name: String? = null
     private val paramsBuilders = linkedSetOf<MethodParamBuilder>()
     private var body: String = ""
-
-    fun modifier(modifier: Modifier): JavaMethodBuilder {
-        this.modifier = modifier
-        return this
-    }
-
-    fun modifier(modifier: String) = apply {
-        this.modifier = Modifier.valueOf(modifier)
-    }
+    private val commentBuilder = MethodCommentBuilder(this)
 
     fun returnType(returnType: String) = apply {
         this.returnType = returnType
     }
-
 
     fun name(name: String) = apply {
         this.name = name
@@ -37,6 +32,33 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) :ImportBuilder by 
         }
     }
 
+    /**
+     * Makes the method private
+     */
+    fun privateMethod() = apply {
+        this.modifier = this.modifier.setPrivate()
+    }
+
+    /**
+     * Makes the method public (default)
+     */
+    fun publicMethod() = apply {
+        this.modifier = this.modifier.setPublic()
+    }
+
+    /**
+     * Makes the method protected
+     */
+    fun protectedMethod() = apply {
+        this.modifier = this.modifier.setProtected()
+    }
+
+    /**
+     * Makes the method default
+     */
+    fun defaultMethod() = apply {
+        this.modifier = this.modifier.setDefault()
+    }
 
     fun body(body: String) = apply {
         this.body = body
@@ -44,6 +66,10 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) :ImportBuilder by 
 
     fun nextMethod(): JavaMethodBuilder {
         return javaBuilder.method()
+    }
+
+    override fun toString(): String {
+        return "$commentBuilder\n${Modifier.toString(modifier)} $returnType $name(${paramsBuilders.joinToString(", ")}) { \n$body }"
     }
 
 }

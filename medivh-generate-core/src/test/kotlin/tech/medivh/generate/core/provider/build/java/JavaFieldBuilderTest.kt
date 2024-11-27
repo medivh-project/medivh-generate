@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test
 
 class JavaFieldBuilderTest {
 
-    private lateinit var javaBuilder: JavaBuilder
+    private lateinit var javaClassBuilder: JavaClassBuilder
     private lateinit var fieldBuilder: JavaFieldBuilder
 
     @BeforeEach
     fun setup() {
-        javaBuilder = JavaBuilder()
-        fieldBuilder = JavaFieldBuilder(javaBuilder)
+        javaClassBuilder = JavaClassBuilder()
+        fieldBuilder = JavaFieldBuilder(javaClassBuilder)
     }
 
     @Test
@@ -20,7 +20,7 @@ class JavaFieldBuilderTest {
         fieldBuilder
             .name("username")
             .type(String::class.java)
-            .build()
+
 
         assertEquals("private String username;", fieldBuilder.toString().trim())
     }
@@ -32,7 +32,6 @@ class JavaFieldBuilderTest {
             .privateField()
             .name("password")
             .type("java.lang.String")
-            .build()
 
         assertEquals("private String password;", fieldBuilder.toString().trim())
     }
@@ -45,7 +44,6 @@ class JavaFieldBuilderTest {
             .finalField()
             .name("MAX_SIZE")
             .type("int")
-            .build()
 
         assertEquals("public static final int MAX_SIZE;", fieldBuilder.toString().trim())
     }
@@ -58,7 +56,6 @@ class JavaFieldBuilderTest {
             .volatileField()
             .name("instance")
             .type("Singleton")
-            .build()
 
         assertEquals("protected volatile Singleton instance;", fieldBuilder.toString().trim())
     }
@@ -71,7 +68,6 @@ class JavaFieldBuilderTest {
             .type("String")
             .annotation()
             .type("NotNull")
-            .build()
 
         assertEquals("@NotNull\nprivate String userId;".trim(), fieldBuilder.toString().trim())
     }

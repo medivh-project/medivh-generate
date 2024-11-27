@@ -18,23 +18,31 @@ import java.lang.reflect.Modifier
  *
  * @author gongxuanzhangmelt@gmail.com
  */
-class JavaBuilder : ImportBuilder {
+class JavaClassBuilder : JavaBuilderComponent {
 
     var packageName: String = ""
 
     val imports = linkedSetOf<String>()
 
-    var modifier: Int = Modifier.PUBLIC
+    private var modifier: Int = Modifier.PUBLIC
 
     lateinit var className: String
 
-    val fieldBuilders = linkedSetOf<JavaFieldBuilder>()
+    private val fieldBuilders = linkedSetOf<JavaFieldBuilder>()
 
-    val methodBuilders = linkedSetOf<JavaMethodBuilder>()
+    private val methodBuilders = linkedSetOf<JavaMethodBuilder>()
 
-    val annotationBuilders = linkedSetOf<ClassAnnotationBuilder>()
+    private val annotationBuilders = linkedSetOf<JavaAnnotationBuilder>()
 
-    var commentBuilder = ClassCommentBuilder(this)
+    private var commentBuilder = JavaCommentBuilder(this)
+
+    override fun checkMySelf() {
+        TODO("Not yet implemented")
+    }
+
+    override fun parent(): JavaBuilderComponent {
+        return this
+    }
 
     /**
      * Imports a class with the specified fully qualified name
@@ -70,28 +78,44 @@ class JavaBuilder : ImportBuilder {
         }
     }
 
-    fun method(action: JavaMethodBuilder.() -> Unit = {}): JavaMethodBuilder {
-        return JavaMethodBuilder(this).apply {
-            methodBuilders.add(this)
-            action(this)
+    /**
+     * Adds a method to the class
+     */
+    fun method(action: JavaMethodBuilder.() -> Unit = {}) = apply {
+        JavaMethodBuilder(this).also {
+            action(it)
+            it.checkMySelf()
+            methodBuilders.add(it)
         }
     }
 
-    fun field(action: JavaFieldBuilder.() -> Unit = {}): JavaFieldBuilder {
-        return JavaFieldBuilder(this).apply {
-            fieldBuilders.add(this)
-            action(this)
+    /**
+     * Adds a field to the class
+     */
+    fun field(action: JavaFieldBuilder.() -> Unit = {}) = apply {
+        JavaFieldBuilder(this).also {
+            action(it)
+            it.checkMySelf()
+            fieldBuilders.add(it)
         }
     }
 
-    fun annotation(action: ClassAnnotationBuilder.() -> Unit = {}): ClassAnnotationBuilder {
-        return ClassAnnotationBuilder(this).apply {
-            annotationBuilders.add(this)
-            action(this)
-        }
+    /**
+     * Adds an annotation to the class
+     */
+    fun annotation(action: JavaAnnotationBuilder.() -> Unit = {}) = apply {
+        JavaAnnotationBuilder(this)
+            .also { annotationBuilders.add(it) }
+            .also(action).checkMySelf()
     }
 
-    fun comment(action: ClassCommentBuilder.() -> Unit = {}) = commentBuilder.apply(action)
+    /**
+     * Adds a comment to the class
+     */
+    fun comment(action: JavaCommentBuilder.() -> Unit = {}) = apply {
+        action(commentBuilder)
+        commentBuilder.checkMySelf()
+    }
 
 
     /**
@@ -151,6 +175,7 @@ class JavaBuilder : ImportBuilder {
         context.put(BUILDER_CONTEXT_KEY, toString())
         return context
     }
+
 
     override fun toString(): String {
         return with(StringBuilder()) {

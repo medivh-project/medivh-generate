@@ -4,7 +4,7 @@ package tech.medivh.generate.core.provider.build.java
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class JavaCommentBuilder<out P> {
+class JavaCommentBuilder(private val parent: JavaBuilderComponent) : JavaBuilderComponent, ImportBuilder by parent {
 
     private var type: CommentType = CommentType.BLOCK
 
@@ -12,23 +12,42 @@ abstract class JavaCommentBuilder<out P> {
 
     private val tags = mutableListOf<Pair<String, String>>()
 
-    open fun blockComment() = apply {
+    fun blockComment() = apply {
         this.type = CommentType.BLOCK
     }
 
-    open fun lineComment() = apply {
+    fun lineComment() = apply {
         this.type = CommentType.LINE
     }
 
-    open fun text(text: String) = apply {
+    fun text(text: String) = apply {
         commentLines.addAll(text.split("\n"))
     }
 
-    open fun tag(key: String, line: String) = apply {
+    fun tag(key: String, line: String) = apply {
         tags.add(key to line)
     }
 
-    abstract fun build(): P
+    fun author(author: String) = apply {
+        tags.add("author" to author)
+    }
+
+    fun since(since: String) = apply {
+        tags.add("since" to since)
+    }
+
+    fun date(date: String) = apply {
+        tags.add("date" to date)
+    }
+
+    override fun checkMySelf() {
+        if (type == CommentType.LINE && tags.isNotEmpty()) {
+            throw IllegalStateException("line comment can not have tags")
+        }
+    }
+
+    override fun parent() = parent
+
 
     override fun toString(): String {
         return commentLines.takeIf { it.isNotEmpty() }?.run {
@@ -55,35 +74,3 @@ abstract class JavaCommentBuilder<out P> {
 }
 
 
-class MethodCommentBuilder(private val parent: JavaMethodBuilder) : JavaCommentBuilder<JavaMethodBuilder>() {
-    override fun build() = parent
-}
-
-class FieldCommentBuilder(private val parent: JavaFieldBuilder) : JavaCommentBuilder<JavaFieldBuilder>() {
-    override fun build() = parent
-}
-
-class ClassCommentBuilder(private val parent: JavaBuilder) : JavaCommentBuilder<JavaBuilder>() {
-    override fun build() = parent
-
-    fun author(author: String) = apply {
-        tag("author", author)
-    }
-
-    override fun blockComment() = apply {
-        super.blockComment()
-    }
-
-    override fun lineComment() = apply {
-        super.lineComment()
-    }
-
-    override fun text(text: String) = apply {
-        super.text(text)
-    }
-
-    override fun tag(key: String, line: String) = apply {
-        super.tag(key, line)
-    }
-
-}

@@ -10,14 +10,15 @@ import java.lang.reflect.Modifier
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaMethodBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by javaBuilder {
+class JavaMethodBuilder(private val parent: JavaClassBuilder) : JavaBuilderComponent, ImportBuilder by parent {
     private var modifier: Int = Modifier.PUBLIC
     private var returnType = "void"
     private var name: String? = null
     private val paramsBuilders = linkedSetOf<MethodParamBuilder>()
-    private val annotationBuilders = linkedSetOf<MethodAnnotationBuilder>()
+    private val annotationBuilders = linkedSetOf<JavaAnnotationBuilder>()
     private var body: String = ""
-    private val commentBuilder = MethodCommentBuilder(this)
+    private val commentBuilder = JavaCommentBuilder(this)
+
 
     fun returnType(returnType: String) = apply {
         this.returnType = returnType
@@ -66,16 +67,31 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by
         this.body = body
     }
 
-    fun build() = javaBuilder
+    fun build() = parent
 
-    fun nextMethod(action: JavaMethodBuilder.() -> Unit = {}): JavaMethodBuilder {
-        return javaBuilder.method(action)
+    /**
+     * Adds an annotation to the method
+     */
+    fun annotation(action: JavaAnnotationBuilder.() -> Unit = {}) = apply {
+        JavaAnnotationBuilder(this)
+            .also { annotationBuilders.add(it) }
+            .also(action).checkMySelf()
     }
 
-    fun annotation(): MethodAnnotationBuilder {
-        return MethodAnnotationBuilder(this).apply {
-            annotationBuilders.add(this)
-        }
+    /**
+     * Adds a comment to the method
+     */
+    fun comment(action: JavaCommentBuilder.() -> Unit = {}) = apply {
+        action(commentBuilder)
+        commentBuilder.checkMySelf()
+    }
+
+    override fun checkMySelf() {
+        //   todo check
+    }
+
+    override fun parent(): JavaBuilderComponent {
+        return parent
     }
 
     override fun toString(): String {

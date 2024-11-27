@@ -4,11 +4,11 @@ package tech.medivh.generate.core.provider.build.java
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class JavaAnnotationBuilder<P : ImportBuilder>(val parent: P) : ImportBuilder by parent {
+class JavaAnnotationBuilder(private val parent: JavaBuilderComponent) : ImportBuilder by parent, JavaBuilderComponent {
 
     private var type: String? = null
 
-    private val member: MutableMap<String, String> = mutableMapOf()
+    private val attributes: MutableMap<String, String> = mutableMapOf()
 
 
     fun type(type: String) = apply {
@@ -21,36 +21,32 @@ abstract class JavaAnnotationBuilder<P : ImportBuilder>(val parent: P) : ImportB
         parent.importClass(type.name)
     }
 
-    fun member(key: String, value: Any) = apply {
+    fun attr(key: String, value: Any) = apply {
         when (value) {
-            is String -> member[key] = "\"$value\""
+            is String -> this.attributes[key] = "\"$value\""
             is Class<*> -> {
-                member[key] = "${value.simpleName}.class"
+                this.attributes[key] = "${value.simpleName}.class"
                 parent.importClass(value)
             }
 
-            else -> member[key] = value.toString()
+            else -> this.attributes[key] = value.toString()
         }
     }
 
-    fun build() = parent
+
+    override fun checkMySelf() {
+        requireNotNull(type) { "annotation type must not null" }
+        //  todo invoke class#forName check value
+
+    }
+
+    override fun parent() = parent
 
     override fun toString(): String {
-        if (member.isEmpty()) {
+        if (attributes.isEmpty()) {
             return "@$type"
         }
-        return "@$type(${member.entries.joinToString(", ") { (k, v) -> "$k = $v" }})"
+        return "@$type(${attributes.entries.joinToString(", ") { (k, v) -> "$k = $v" }})"
     }
 }
 
-class FieldAnnotationBuilder(parent: JavaFieldBuilder) : JavaAnnotationBuilder<JavaFieldBuilder>(parent) {
-    fun nextAnnotation() = parent.annotation()
-}
-
-class MethodAnnotationBuilder(parent: JavaMethodBuilder) : JavaAnnotationBuilder<JavaMethodBuilder>(parent) {
-    fun nextAnnotation() = parent.annotation()
-}
-
-class ClassAnnotationBuilder(parent: JavaBuilder) : JavaAnnotationBuilder<JavaBuilder>(parent) {
-    fun nextAnnotation() = parent.annotation()
-}

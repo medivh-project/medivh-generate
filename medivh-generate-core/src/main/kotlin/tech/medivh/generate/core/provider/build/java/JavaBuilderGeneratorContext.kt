@@ -6,7 +6,7 @@ import tech.medivh.generate.core.env.AbstractGenerateContext
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaBuilderGeneratorContext(val builder: JavaBuilder) : AbstractGenerateContext() {
+class JavaBuilderGeneratorContext(val builder: JavaClassBuilder) : AbstractGenerateContext() {
 
 
 }

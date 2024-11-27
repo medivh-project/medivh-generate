@@ -10,13 +10,13 @@ import java.lang.reflect.Modifier
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by javaBuilder {
+class JavaFieldBuilder(private val parent: JavaClassBuilder) : JavaBuilderComponent, ImportBuilder by parent {
 
     private var name: String? = null
     private var type: String? = null
     private var modifier: Int = Modifier.PRIVATE
-    private val annotationBuilders = linkedSetOf<FieldAnnotationBuilder>()
-    private val commentBuilder = FieldCommentBuilder(this)
+    private val annotationBuilders = linkedSetOf<JavaAnnotationBuilder>()
+    private val commentBuilder = JavaCommentBuilder(this)
 
     /**
      * Sets the name of the field.
@@ -34,7 +34,7 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
      */
     fun type(type: String): JavaFieldBuilder = apply {
         this.type = type.substringAfterLast(".")
-        javaBuilder.importClass(type)
+        parent.importClass(type)
     }
 
     /**
@@ -44,7 +44,24 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
      */
     fun type(type: Class<*>): JavaFieldBuilder = apply {
         this.type = type.simpleName
-        javaBuilder.importClass(type.name)
+        parent.importClass(type.name)
+    }
+
+    /**
+     * Adds a comment to the field
+     */
+    fun comment(action: JavaCommentBuilder.() -> Unit = {}) = apply {
+        action(commentBuilder)
+        commentBuilder.checkMySelf()
+    }
+
+    /**
+     * Adds an annotation to the field
+     */
+    fun annotation(action: JavaAnnotationBuilder.() -> Unit = {}) = apply {
+        JavaAnnotationBuilder(this)
+            .also { annotationBuilders.add(it) }
+            .also(action).checkMySelf()
     }
 
     /**
@@ -75,11 +92,6 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
         this.modifier = this.modifier.setDefault()
     }
 
-    fun annotation(): FieldAnnotationBuilder {
-        return FieldAnnotationBuilder(this).apply {
-            annotationBuilders.add(this)
-        }
-    }
 
     /**
      * Makes the field final
@@ -109,20 +121,14 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
         this.modifier = this.modifier or Modifier.VOLATILE
     }
 
-    fun comment(action: FieldCommentBuilder.() -> Unit = {}) = commentBuilder.apply(action)
 
-    /**
-     * Prepares for defining another field.
-     * @return a new JavaFieldBuilder instance
-     */
-    fun nextField(action: JavaFieldBuilder.() -> Unit = {}): JavaFieldBuilder {
-        return javaBuilder.field().apply(action)
-    }
-
-    fun build(): JavaBuilder {
+    override fun checkMySelf() {
         require(name.isNullOrBlank().not()) { "Field name must be initialized and non-blank" }
         require(type.isNullOrBlank().not()) { "Field type must be initialized and non-blank" }
-        return javaBuilder
+    }
+
+    override fun parent(): JavaBuilderComponent {
+        return parent
     }
 
     override fun toString(): String {

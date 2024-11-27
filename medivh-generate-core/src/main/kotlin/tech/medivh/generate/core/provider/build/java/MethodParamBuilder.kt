@@ -4,7 +4,7 @@ package tech.medivh.generate.core.provider.build.java
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class MethodParamBuilder(private val methodBuilder: JavaMethodBuilder) : ImportBuilder by methodBuilder {
+class MethodParamBuilder(private val parent: JavaMethodBuilder) : JavaBuilderComponent, ImportBuilder by parent {
 
     private var name: String? = null
     private var type: String? = null
@@ -38,22 +38,14 @@ class MethodParamBuilder(private val methodBuilder: JavaMethodBuilder) : ImportB
         importClass(type.name)
     }
 
-    /**
-     * Completes the parameter definition and returns the parent method builder.
-     * @return the parent JavaMethodBuilder instance
-     */
-    fun build(): JavaMethodBuilder {
+
+    override fun checkMySelf() {
         requireNotNull(name) { "Parameter name must be initialized" }
         requireNotNull(type) { "Parameter type must be initialized" }
-        return methodBuilder
     }
 
-    /**
-     * Prepares for defining another parameter.
-     * @return a new MethodParamBuilder instance
-     */
-    fun nextParam(): MethodParamBuilder {
-        return build().parameters()
+    override fun parent(): JavaMethodBuilder {
+        return parent
     }
 
     override fun toString(): String {

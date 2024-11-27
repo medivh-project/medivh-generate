@@ -31,7 +31,7 @@ class JavaBuilder : ImportBuilder {
 
     private val methodBuilders = linkedSetOf<JavaMethodBuilder>()
 
-    private val annotationBuilders = linkedSetOf<JavaAnnotationBuilder>()
+    private val annotationBuilders = linkedSetOf<ClassAnnotationBuilder>()
 
     private var commentBuilder = ClassCommentBuilder(this)
 
@@ -41,9 +41,7 @@ class JavaBuilder : ImportBuilder {
      * @return the current builder instance
      */
     override fun importClass(import: String) = apply {
-        check("." in import) {
-            "Invalid import statement: $import"
-        }
+        //  todo illegal import
         imports.add(import)
     }
 
@@ -83,8 +81,8 @@ class JavaBuilder : ImportBuilder {
         }
     }
 
-    fun annotation(): JavaAnnotationBuilder {
-        return JavaAnnotationBuilder(this).apply {
+    fun annotation(): ClassAnnotationBuilder {
+        return ClassAnnotationBuilder(this).apply {
             annotationBuilders.add(this)
         }
     }

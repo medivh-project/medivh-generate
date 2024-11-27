@@ -15,6 +15,7 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
     private var name: String? = null
     private var type: String? = null
     private var modifier: Int = Modifier.PRIVATE
+    private val annotationBuilders = linkedSetOf<FieldAnnotationBuilder>()
     private val commentBuilder = FieldCommentBuilder(this)
 
     /**
@@ -74,6 +75,12 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
         this.modifier = this.modifier.setDefault()
     }
 
+    fun annotation(): FieldAnnotationBuilder {
+        return FieldAnnotationBuilder(this).apply {
+            annotationBuilders.add(this)
+        }
+    }
+
     /**
      * Makes the field final
      */
@@ -102,16 +109,6 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
         this.modifier = this.modifier or Modifier.VOLATILE
     }
 
-    /**
-     * Completes the field definition and returns the parent JavaBuilder instance.
-     * @return the parent JavaBuilder instance
-     */
-    fun build(): JavaBuilder {
-        require(name.isNullOrBlank().not()) { "Field name must be initialized and non-blank" }
-        require(type.isNullOrBlank().not()) { "Field type must be initialized and non-blank" }
-        return javaBuilder
-    }
-
     fun comment() = commentBuilder
 
     /**
@@ -122,8 +119,15 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
         return javaBuilder.field()
     }
 
-    override fun toString(): String {
-        return "$commentBuilder\n${Modifier.toString(modifier)} $type $name;"
+    fun build(): JavaBuilder {
+        require(name.isNullOrBlank().not()) { "Field name must be initialized and non-blank" }
+        require(type.isNullOrBlank().not()) { "Field type must be initialized and non-blank" }
+        return javaBuilder
     }
+
+    override fun toString(): String {
+        return "$commentBuilder\n${annotationBuilders.joinToString("\n")}\n${Modifier.toString(modifier)} $type $name;"
+    }
+
 }
 

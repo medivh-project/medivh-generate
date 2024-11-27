@@ -15,6 +15,7 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by
     private var returnType = "void"
     private var name: String? = null
     private val paramsBuilders = linkedSetOf<MethodParamBuilder>()
+    private val annotationBuilders = linkedSetOf<MethodAnnotationBuilder>()
     private var body: String = ""
     private val commentBuilder = MethodCommentBuilder(this)
 
@@ -66,6 +67,12 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by
 
     fun nextMethod(): JavaMethodBuilder {
         return javaBuilder.method()
+    }
+
+    fun annotation(): MethodAnnotationBuilder {
+        return MethodAnnotationBuilder(this).apply {
+            annotationBuilders.add(this)
+        }
     }
 
     override fun toString(): String {

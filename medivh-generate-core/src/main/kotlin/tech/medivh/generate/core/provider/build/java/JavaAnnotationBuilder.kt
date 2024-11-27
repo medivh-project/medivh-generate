@@ -4,11 +4,12 @@ package tech.medivh.generate.core.provider.build.java
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaAnnotationBuilder(private val parent: JavaBuilder) : ImportBuilder by parent {
+abstract class JavaAnnotationBuilder<P : ImportBuilder>(val parent: P) : ImportBuilder by parent {
 
     private var type: String? = null
 
     private val member: MutableMap<String, String> = mutableMapOf()
+
 
     fun type(type: String) = apply {
         this.type = type.substringAfterLast(".")
@@ -34,12 +35,22 @@ class JavaAnnotationBuilder(private val parent: JavaBuilder) : ImportBuilder by 
 
     fun build() = parent
 
-
-    fun nextAnnotation(): JavaAnnotationBuilder {
-        return parent.annotation()
-    }
-
     override fun toString(): String {
+        if(member.isEmpty()){
+            return "@$type"
+        }
         return "@$type(${member.entries.joinToString(", ") { (k, v) -> "$k = $v" }})"
     }
+}
+
+class FieldAnnotationBuilder(parent: JavaFieldBuilder) : JavaAnnotationBuilder<JavaFieldBuilder>(parent) {
+    fun nextAnnotation() = parent.annotation()
+}
+
+class MethodAnnotationBuilder(parent: JavaMethodBuilder) : JavaAnnotationBuilder<JavaMethodBuilder>(parent) {
+    fun nextAnnotation() = parent.annotation()
+}
+
+class ClassAnnotationBuilder(parent: JavaBuilder) : JavaAnnotationBuilder<JavaBuilder>(parent) {
+    fun nextAnnotation() = parent.annotation()
 }

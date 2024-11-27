@@ -29,7 +29,7 @@ allprojects {
     }
 
     kotlin {
-        jvmToolchain(17)
+        jvmToolchain(11)
     }
 
     extensions.create("medivhVersion", Versions::class.java, rootVersionFile)

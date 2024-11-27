@@ -1,5 +1,6 @@
 package tech.medivh.generate.core.provider.build.java
 
+import tech.medivh.generate.core.provider.build.java.JavaClassBuilderTemplate.Companion.BUILDER_CONTEXT_KEY
 import tech.medivh.generate.core.provider.build.setDefault
 import tech.medivh.generate.core.provider.build.setPrivate
 import tech.medivh.generate.core.provider.build.setProtected
@@ -19,21 +20,21 @@ import java.lang.reflect.Modifier
  */
 class JavaBuilder : ImportBuilder {
 
-    private var packageName: String = ""
+    var packageName: String = ""
 
-    private val imports = linkedSetOf<String>()
+    val imports = linkedSetOf<String>()
 
-    private var modifier: Int = Modifier.PUBLIC
+    var modifier: Int = Modifier.PUBLIC
 
-    private lateinit var className: String
+    lateinit var className: String
 
-    private val fieldBuilders = linkedSetOf<JavaFieldBuilder>()
+    val fieldBuilders = linkedSetOf<JavaFieldBuilder>()
 
-    private val methodBuilders = linkedSetOf<JavaMethodBuilder>()
+    val methodBuilders = linkedSetOf<JavaMethodBuilder>()
 
-    private val annotationBuilders = linkedSetOf<ClassAnnotationBuilder>()
+    val annotationBuilders = linkedSetOf<ClassAnnotationBuilder>()
 
-    private var commentBuilder = ClassCommentBuilder(this)
+    var commentBuilder = ClassCommentBuilder(this)
 
     /**
      * Imports a class with the specified fully qualified name
@@ -69,25 +70,28 @@ class JavaBuilder : ImportBuilder {
         }
     }
 
-    fun method(): JavaMethodBuilder {
+    fun method(action: JavaMethodBuilder.() -> Unit = {}): JavaMethodBuilder {
         return JavaMethodBuilder(this).apply {
             methodBuilders.add(this)
+            action(this)
         }
     }
 
-    fun field(): JavaFieldBuilder {
+    fun field(action: JavaFieldBuilder.() -> Unit = {}): JavaFieldBuilder {
         return JavaFieldBuilder(this).apply {
             fieldBuilders.add(this)
+            action(this)
         }
     }
 
-    fun annotation(): ClassAnnotationBuilder {
+    fun annotation(action: ClassAnnotationBuilder.() -> Unit = {}): ClassAnnotationBuilder {
         return ClassAnnotationBuilder(this).apply {
             annotationBuilders.add(this)
+            action(this)
         }
     }
 
-    fun comment() = commentBuilder
+    fun comment(action: ClassCommentBuilder.() -> Unit = {}) = commentBuilder.apply(action)
 
 
     /**
@@ -142,5 +146,30 @@ class JavaBuilder : ImportBuilder {
         this.modifier = this.modifier or Modifier.STATIC
     }
 
+    fun build(): JavaBuilderGeneratorContext {
+        val context = JavaBuilderGeneratorContext(this)
+        context.put(BUILDER_CONTEXT_KEY, toString())
+        return context
+    }
+
+    override fun toString(): String {
+        return with(StringBuilder()) {
+            appendLine("package $packageName;")
+            //  todo import illegal
+//            imports.forEach {
+//                appendLine("import $it;")
+//            }
+            appendLine(commentBuilder.toString())
+            appendLine("${Modifier.toString(modifier)} class $className {")
+            fieldBuilders.forEach {
+                appendLine(it.toString())
+            }
+            methodBuilders.forEach {
+                appendLine(it.toString())
+            }
+            appendLine("}")
+            this.toString()
+        }
+    }
 
 }

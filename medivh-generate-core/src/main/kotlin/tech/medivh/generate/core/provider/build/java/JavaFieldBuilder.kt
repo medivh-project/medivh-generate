@@ -109,14 +109,14 @@ class JavaFieldBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by 
         this.modifier = this.modifier or Modifier.VOLATILE
     }
 
-    fun comment() = commentBuilder
+    fun comment(action: FieldCommentBuilder.() -> Unit = {}) = commentBuilder.apply(action)
 
     /**
      * Prepares for defining another field.
      * @return a new JavaFieldBuilder instance
      */
-    fun nextField(): JavaFieldBuilder {
-        return javaBuilder.field()
+    fun nextField(action: JavaFieldBuilder.() -> Unit = {}): JavaFieldBuilder {
+        return javaBuilder.field().apply(action)
     }
 
     fun build(): JavaBuilder {

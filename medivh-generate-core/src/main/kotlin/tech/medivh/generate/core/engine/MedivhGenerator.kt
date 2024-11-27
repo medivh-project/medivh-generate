@@ -5,6 +5,8 @@ import tech.medivh.generate.core.SimpleFileWriter
 import tech.medivh.generate.core.Template
 import tech.medivh.generate.core.WriteRule
 import tech.medivh.generate.core.env.GeneratorContext
+import tech.medivh.generate.core.provider.build.java.JavaBuilderGeneratorContext
+import java.io.File
 
 
 /**
@@ -12,7 +14,7 @@ import tech.medivh.generate.core.env.GeneratorContext
  **/
 object MedivhGenerator {
 
-    lateinit var writeRule: WriteRule
+    var writeRule: WriteRule = TempWriteRule
 
     fun generate() {
         val modules = ModuleLoader.loadModules()
@@ -27,6 +29,26 @@ object MedivhGenerator {
 
     private fun merge(template: Template, context: GeneratorContext): FileWriter {
         return SimpleFileWriter(template, context, writeRule)
+    }
+
+}
+
+// todo
+object TempWriteRule : WriteRule {
+
+    override fun overwrite(): Boolean {
+        return true
+    }
+
+    override fun targetFile(template: Template, context: GeneratorContext): File {
+        if (context is JavaBuilderGeneratorContext) {
+            return File("${context.builder.className}.java")
+        }
+        TODO()
+    }
+
+    override fun format(): Boolean {
+        return true
     }
 
 }

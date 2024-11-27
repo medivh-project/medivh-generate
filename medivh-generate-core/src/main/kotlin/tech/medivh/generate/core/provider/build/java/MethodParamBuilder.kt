@@ -55,4 +55,8 @@ class MethodParamBuilder(private val methodBuilder: JavaMethodBuilder) : ImportB
     fun nextParam(): MethodParamBuilder {
         return build().parameters()
     }
+
+    override fun toString(): String {
+        return "$type $name"
+    }
 }

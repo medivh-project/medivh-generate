@@ -27,9 +27,10 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by
         this.name = name
     }
 
-    fun parameters(): MethodParamBuilder {
+    fun parameters(action: MethodParamBuilder.() -> Unit = {}): MethodParamBuilder {
         return MethodParamBuilder(this).apply {
             paramsBuilders.add(this)
+            action(this)
         }
     }
 
@@ -65,8 +66,10 @@ class JavaMethodBuilder(private val javaBuilder: JavaBuilder) : ImportBuilder by
         this.body = body
     }
 
-    fun nextMethod(): JavaMethodBuilder {
-        return javaBuilder.method()
+    fun build() = javaBuilder
+
+    fun nextMethod(action: JavaMethodBuilder.() -> Unit = {}): JavaMethodBuilder {
+        return javaBuilder.method(action)
     }
 
     fun annotation(): MethodAnnotationBuilder {

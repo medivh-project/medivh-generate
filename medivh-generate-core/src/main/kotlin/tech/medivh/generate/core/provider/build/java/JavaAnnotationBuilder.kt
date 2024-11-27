@@ -36,7 +36,7 @@ abstract class JavaAnnotationBuilder<P : ImportBuilder>(val parent: P) : ImportB
     fun build() = parent
 
     override fun toString(): String {
-        if(member.isEmpty()){
+        if (member.isEmpty()) {
             return "@$type"
         }
         return "@$type(${member.entries.joinToString(", ") { (k, v) -> "$k = $v" }})"

@@ -12,19 +12,19 @@ abstract class JavaCommentBuilder<out P> {
 
     private val tags = mutableListOf<Pair<String, String>>()
 
-    fun blockComment() = apply {
+    open fun blockComment() = apply {
         this.type = CommentType.BLOCK
     }
 
-    fun lineComment() = apply {
+    open fun lineComment() = apply {
         this.type = CommentType.LINE
     }
 
-    fun text(text: String) = apply {
+    open fun text(text: String) = apply {
         commentLines.addAll(text.split("\n"))
     }
 
-    fun tag(key: String, line: String) = apply {
+    open fun tag(key: String, line: String) = apply {
         tags.add(key to line)
     }
 
@@ -32,22 +32,19 @@ abstract class JavaCommentBuilder<out P> {
 
     override fun toString(): String {
         return commentLines.takeIf { it.isNotEmpty() }?.run {
+            val builder = StringBuilder()
             when (type) {
                 CommentType.BLOCK -> {
-                    StringBuilder().apply {
-                        appendLine("/**")
-                        this.forEach { appendLine(" * $it") }
-                        appendLine(" **/")
-                    }.toString()
+                    builder.appendLine("/**")
+                    commentLines.forEach { builder.appendLine(" * $it") }
+                    builder.appendLine(" **/")
                 }
 
                 CommentType.LINE -> {
-                    StringBuilder().apply {
-                        this.forEach { appendLine(" // $it") }
-                        appendLine(" **/")
-                    }.toString()
+                    commentLines.forEach { builder.appendLine(" // $it") }
                 }
             }
+            builder.toString()
         } ?: ""
     }
 
@@ -71,4 +68,21 @@ class ClassCommentBuilder(private val parent: JavaBuilder) : JavaCommentBuilder<
     fun author(author: String) = apply {
         tag("author", author)
     }
+
+    override fun blockComment() = apply {
+        super.blockComment()
+    }
+
+    override fun lineComment() = apply {
+        super.lineComment()
+    }
+
+    override fun text(text: String) = apply {
+        super.text(text)
+    }
+
+    override fun tag(key: String, line: String) = apply {
+        super.tag(key, line)
+    }
+
 }

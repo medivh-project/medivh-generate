@@ -3,6 +3,7 @@ package tech.medivh.generate.core
 import org.apache.velocity.app.Velocity
 import tech.medivh.generate.core.env.GeneratorContext
 import tech.medivh.generate.core.event.*
+import tech.medivh.generate.core.provider.build.java.JavaFormatter
 import java.io.File
 import java.io.StringWriter
 
@@ -20,17 +21,23 @@ class SimpleFileWriter(
 
     override fun write(): File {
         StringWriter().use { write ->
-            Velocity.evaluate(context, write, template.resource().file, template.resource().readText())
+            Velocity.evaluate(context, write, template.templateName(), template.readText())
             val targetFile = rule.targetFile(template, context)
+            val finalCode = if (rule.format()) {
+                JavaFormatter.formatCode(write.toString())
+            } else {
+                write.toString()
+            }
+
             if (targetFile.exists().not()) {
-                targetFile.writeText(write.toString())
+                targetFile.writeText(finalCode)
                 publishEvent(WriteEvent(targetFile))
                 return targetFile
             }
 
             if (rule.overwrite()) {
-                publishEvent(BeforeCoverEvent(targetFile, write.toString()))
-                targetFile.writeText(write.toString())
+                publishEvent(BeforeCoverEvent(targetFile, finalCode))
+                targetFile.writeText(finalCode)
                 return targetFile
             }
             publishEvent(TargetFileExistEvent(targetFile))
@@ -39,4 +46,6 @@ class SimpleFileWriter(
 
     }
 
+
 }
+

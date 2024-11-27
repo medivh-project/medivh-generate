@@ -8,14 +8,14 @@ import tech.medivh.generate.core.event.EventPublisher
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
 abstract class AbstractGenerateContext(
-    protected val publisher: Bus = EventPublisher()
+    private val publisher: Bus = EventPublisher()
 ) : GeneratorContext, Bus by publisher {
 
-    protected val vmContext = mutableMapOf<String, Any>()
+    private val vmContext = mutableMapOf<String, Any>()
 
 
-    override fun put(key: String, value: Any): Any {
-        return vmContext.put(key, value)!!
+    override fun put(key: String, value: Any): Any? {
+        return vmContext.put(key, value)
     }
 
     override fun get(key: String): Any? {

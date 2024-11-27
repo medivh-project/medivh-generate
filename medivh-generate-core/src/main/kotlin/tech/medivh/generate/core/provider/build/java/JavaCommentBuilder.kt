@@ -37,6 +37,7 @@ abstract class JavaCommentBuilder<out P> {
                 CommentType.BLOCK -> {
                     builder.appendLine("/**")
                     commentLines.forEach { builder.appendLine(" * $it") }
+                    tags.forEach { builder.appendLine(" * @${it.first} ${it.second}") }
                     builder.appendLine(" **/")
                 }
 

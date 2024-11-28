@@ -3,7 +3,7 @@ package tech.medivh.generate.core
 import org.apache.velocity.app.Velocity
 import tech.medivh.generate.core.env.GeneratorContext
 import tech.medivh.generate.core.event.*
-import tech.medivh.generate.core.provider.build.java.JavaFormatter
+import tech.medivh.generate.core.provider.build.java.JavaCodeFormatter
 import java.io.File
 import java.io.StringWriter
 
@@ -24,7 +24,7 @@ class SimpleFileWriter(
             Velocity.evaluate(context, write, template.templateName(), template.readText())
             val targetFile = rule.targetFile(template, context)
             val finalCode = if (rule.format()) {
-                JavaFormatter.formatCode(write.toString())
+                JavaCodeFormatter.googleFormat(write.toString())
             } else {
                 write.toString()
             }

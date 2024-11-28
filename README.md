@@ -8,3 +8,14 @@
 ## 🔥 Medivh-Generate
 
 > Medivh-Generate is a code generate (You can also use it to generate non code files).
+> 
+
+
+## Why Medivh-Generate
+
+Unlike other code generation, Medivh supports deep customization and apis, which you can compare to maven and gradle.
+
+
+
+
+

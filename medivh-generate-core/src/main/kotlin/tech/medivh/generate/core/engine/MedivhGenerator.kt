@@ -42,7 +42,8 @@ object TempWriteRule : WriteRule {
 
     override fun targetFile(template: Template, context: GeneratorContext): File {
         if (context is JavaBuilderGeneratorContext) {
-            return File("${context.builder.className}.java")
+            TODO()
+//            return File("${context.builder.className}.java")
         }
         TODO()
     }

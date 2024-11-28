@@ -1,200 +1,137 @@
 package tech.medivh.generate.core.provider.build.java
 
-import tech.medivh.generate.core.provider.build.java.JavaClassBuilderTemplate.Companion.BUILDER_CONTEXT_KEY
-import tech.medivh.generate.core.provider.build.setDefault
-import tech.medivh.generate.core.provider.build.setPrivate
-import tech.medivh.generate.core.provider.build.setProtected
-import tech.medivh.generate.core.provider.build.setPublic
-import java.lang.reflect.Modifier
-
+import tech.medivh.generate.core.env.GeneratorContext
+import tech.medivh.generate.core.provider.build.BuilderComponent
 
 /**
- * Builds Java class structures through a fluent interface.
+ * Builder interface for creating Java classes.
+ * Provides a fluent API for constructing Java class declarations with various modifiers,
+ * fields, methods, and inner classes.
  *
- * This builder is designed to facilitate the creation of class structures with a focus on simplicity and readability.
- * It does not guarantee that the generated class definitions will compile without errors in all environments or contexts.
- * Users are responsible for verifying the correctness, completeness, and adherence to specific project requirements,
- * including import statements, method implementations, and adherence to Java language specifications.
+ * Example usage:
+ * ```java
+ * builder.name("UserService")
+ *        .publicClass()
+ *        .superInterface("UserInterface")
+ *        .superClass("BaseService")
+ *        .annotation {
+ *            name("Service")
+ *        }
+ *        .field {
+ *            name("userRepository")
+ *            type("UserRepository")
+ *            privateField()
+ *            annotation {
+ *                name("Autowired")
+ *            }
+ *        }
+ *        .method {
+ *            name("findUser")
+ *            publicMethod()
+ *            returnType("User")
+ *            parameter {
+ *                name("id")
+ *                type("Long")
+ *            }
+ *        }
+ * ```
  *
- * @author gongxuanzhangmelt@gmail.com
- */
-class JavaClassBuilder : JavaBuilderComponent {
-
-    var packageName: String = ""
-
-    val imports = linkedSetOf<String>()
-
-    private var modifier: Int = Modifier.PUBLIC
-
-    lateinit var className: String
-
-    private val fieldBuilders = linkedSetOf<JavaFieldBuilder>()
-
-    private val methodBuilders = linkedSetOf<JavaMethodBuilder>()
-
-    private val annotationBuilders = linkedSetOf<JavaAnnotationBuilder>()
-
-    private var commentBuilder = JavaCommentBuilder(this)
-
-    override fun checkMySelf() {
-        TODO("Not yet implemented")
-    }
-
-    override fun parent(): JavaBuilderComponent {
-        return this
-    }
+ * @author gxz gongxuanzhangmelt@gmail.com
+ **/
+interface JavaClassBuilder<C, A, F, M> : BuilderComponent
+        where C : JavaCommentBuilder,
+              A : JavaAnnotationBuilder,
+              F : JavaFieldBuilder<C, A>,
+              M : JavaMethodBuilder<C, A, *> {
 
     /**
-     * Imports a class with the specified fully qualified name
-     * @param import the fully qualified class name
-     * @return the current builder instance
+     * Sets the class name
      */
-    override fun importClass(import: String) = apply {
-        //  todo illegal import
-        imports.add(import)
-    }
+    fun name(name: String): JavaClassBuilder<C, A, F, M>
 
     /**
-     * Imports the specified class
-     * @param clazz the class to import
-     * @return the current builder instance
+     * Sets the package name for the class
      */
-    override fun importClass(clazz: Class<*>) = apply {
-        imports.add(clazz.name)
-    }
+    fun packageName(name: String): JavaClassBuilder<C, A, F, M>
 
     /**
-     * Sets the class name. If the input contains package information (e.g. "com.example.MyClass"),
-     * it will automatically set both package name and class name
-     * @param fullClassName the class name, optionally including package name
-     * @return the current builder instance
+     * Sets the superclass that this class extends
      */
-    fun className(fullClassName: String) = apply {
-        if ('.' in fullClassName) {
-            packageName = fullClassName.substringBeforeLast('.')
-            className = fullClassName.substringAfterLast('.')
-        } else {
-            className = fullClassName
-        }
-    }
+    fun superClass(className: String): JavaClassBuilder<C, A, F, M>
 
     /**
-     * Adds a method to the class
+     * Adds an interface that this class implements
      */
-    fun method(action: JavaMethodBuilder.() -> Unit = {}) = apply {
-        JavaMethodBuilder(this).also {
-            action(it)
-            it.checkMySelf()
-            methodBuilders.add(it)
-        }
-    }
+    fun superInterface(interfaceName: String): JavaClassBuilder<C, A, F, M>
+
+
+    /**
+     * Makes the class public
+     */
+    fun publicClass(): JavaClassBuilder<C, A, F, M>
+
+    /**
+     * Makes the class private
+     */
+    fun privateClass(): JavaClassBuilder<C, A, F, M>
+
+    /**
+     * Makes the class protected
+     */
+    fun protectedClass(): JavaClassBuilder<C, A, F, M>
+
+    /**
+     * Makes the class package-private (default access)
+     */
+    fun defaultClass(): JavaClassBuilder<C, A, F, M>
+
+    /**
+     * Makes the class static
+     */
+    fun staticClass(): JavaClassBuilder<C, A, F, M>
+
+    /**
+     * Makes the class final
+     */
+    fun finalClass(): JavaClassBuilder<C, A, F, M>
+
+    /**
+     * Makes the class abstract
+     */
+    fun abstractClass(): JavaClassBuilder<C, A, F, M>
 
     /**
      * Adds a field to the class
      */
-    fun field(action: JavaFieldBuilder.() -> Unit = {}) = apply {
-        JavaFieldBuilder(this).also {
-            action(it)
-            it.checkMySelf()
-            fieldBuilders.add(it)
-        }
-    }
+    fun field(fieldBuilder: F.() -> Unit): JavaClassBuilder<C, A, F, M>
 
     /**
-     * Adds an annotation to the class
+     * Adds a method to the class
      */
-    fun annotation(action: JavaAnnotationBuilder.() -> Unit = {}) = apply {
-        JavaAnnotationBuilder(this)
-            .also { annotationBuilders.add(it) }
-            .also(action).checkMySelf()
-    }
+    fun method(methodBuilder: M.() -> Unit): JavaClassBuilder<C, A, F, M>
+
+    /**
+     * Adds an inner class to this class
+     */
+    fun innerClass(classBuilder: JavaClassBuilder<C, A, F, M>.() -> Unit): JavaClassBuilder<C, A, F, M>
 
     /**
      * Adds a comment to the class
      */
-    fun comment(action: JavaCommentBuilder.() -> Unit = {}) = apply {
-        action(commentBuilder)
-        commentBuilder.checkMySelf()
-    }
-
+    fun comment(commentBuilder: C.() -> Unit): JavaClassBuilder<C, A, F, M>
 
     /**
-     * Sets the class access modifier to public
-     * @return the current builder instance
+     * Adds an annotation to the class
      */
-    fun publicClass() = apply {
-        this.modifier = this.modifier.setPublic()
-    }
-
-    fun defaultClass() = apply {
-        this.modifier = this.modifier.setDefault()
-    }
+    fun annotation(annotationBuilder: A.() -> Unit): JavaClassBuilder<C, A, F, M>
 
     /**
-     * Sets the class access modifier to private
-     * @return the current builder instance
+     * Constructs and returns the [GeneratorContext] based on the configured settings
+     * of the [JavaClassBuilder].
+     *
+     * @return A [GeneratorContext] instance encapsulating the configuration for generating
+     *         the Java class code.
      */
-    fun privateClass() = apply {
-        this.modifier = this.modifier.setPrivate()
-    }
-
-    /**
-     * Sets the class access modifier to protected
-     * @return the current builder instance
-     */
-    fun protectedClass() = apply {
-        this.modifier = this.modifier.setProtected()
-    }
-
-    /**
-     * Makes the class final
-     * @return the current builder instance
-     */
-    fun finalClass() = apply {
-        this.modifier = this.modifier or Modifier.FINAL
-    }
-
-    /**
-     * Makes the class abstract
-     * @return the current builder instance
-     */
-    fun abstractClass() = apply {
-        this.modifier = this.modifier or Modifier.ABSTRACT
-    }
-
-    /**
-     * Makes the class static
-     * @return the current builder instance
-     */
-    fun staticClass() = apply {
-        this.modifier = this.modifier or Modifier.STATIC
-    }
-
-    fun build(): JavaBuilderGeneratorContext {
-        val context = JavaBuilderGeneratorContext(this)
-        context.put(BUILDER_CONTEXT_KEY, toString())
-        return context
-    }
-
-
-    override fun toString(): String {
-        return with(StringBuilder()) {
-            appendLine("package $packageName;")
-            //  todo import illegal
-//            imports.forEach {
-//                appendLine("import $it;")
-//            }
-            appendLine(commentBuilder.toString())
-            appendLine("${Modifier.toString(modifier)} class $className {")
-            fieldBuilders.forEach {
-                appendLine(it.toString())
-            }
-            methodBuilders.forEach {
-                appendLine(it.toString())
-            }
-            appendLine("}")
-            this.toString()
-        }
-    }
+    fun build(): GeneratorContext
 
 }

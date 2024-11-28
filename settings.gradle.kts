@@ -20,6 +20,7 @@ include(":medivh-generate-plugin")
 include(":medivh-generate-console")
 include(":medivh-generate-plugin:medivh-generate-plugin-mybatis")
 include(":medivh-generate-plugin:medivh-generate-plugin-mybatis-plus")
+include(":medivh-generate-plugin:medivh-generate-plugin-spring")
 
 rootProject.children.forEach { it.configureBuildScriptName() }
 

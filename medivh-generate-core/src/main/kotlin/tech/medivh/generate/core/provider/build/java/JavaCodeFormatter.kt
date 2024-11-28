@@ -8,9 +8,11 @@ import com.google.googlejavaformat.java.Formatter
  * delegate to google java code formatter
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-object JavaFormatter {
+object JavaCodeFormatter {
 
-    fun formatCode(javaCode: String): String {
-        return Formatter().formatSource(javaCode)
+    private val googleFormatter by lazy { Formatter() }
+
+    fun googleFormat(javaCode: String): String {
+        return googleFormatter.formatSource(javaCode)
     }
 }

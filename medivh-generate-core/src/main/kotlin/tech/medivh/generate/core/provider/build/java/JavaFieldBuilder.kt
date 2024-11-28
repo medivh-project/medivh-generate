@@ -1,139 +1,131 @@
 package tech.medivh.generate.core.provider.build.java
 
-import tech.medivh.generate.core.provider.build.setDefault
-import tech.medivh.generate.core.provider.build.setPrivate
-import tech.medivh.generate.core.provider.build.setProtected
-import tech.medivh.generate.core.provider.build.setPublic
-import java.lang.reflect.Modifier
+import tech.medivh.generate.core.provider.build.BuilderComponent
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JavaFieldBuilder(private val parent: JavaClassBuilder) : JavaBuilderComponent, ImportBuilder by parent {
-
-    private var name: String? = null
-    private var type: String? = null
-    private var modifier: Int = Modifier.PRIVATE
-    private val annotationBuilders = linkedSetOf<JavaAnnotationBuilder>()
-    private val commentBuilder = JavaCommentBuilder(this)
+interface JavaFieldBuilder<C, A> : BuilderComponent where C : JavaCommentBuilder, A : JavaAnnotationBuilder {
 
     /**
-     * Sets the name of the field.
+     * Sets the name of the field direct.
      * @param name the name of the field
      * @return the current builder instance
      */
-    fun name(name: String): JavaFieldBuilder = apply {
-        this.name = name
-    }
+    fun name(name: String): JavaFieldBuilder<C, A>
 
     /**
-     * Sets the type of the field using its fully qualified class name as a String.
-     * @param type fully qualified name of the class
+     * Sets the name of the field by a supplier.
+     * @param nameSupplier the name of the field
      * @return the current builder instance
      */
-    fun type(type: String): JavaFieldBuilder = apply {
-        this.type = type.substringAfterLast(".")
-        parent.importClass(type)
-    }
+    fun name(nameSupplier: () -> String): JavaFieldBuilder<C, A>
 
     /**
-     * Sets the type of the field using a Class reference.
-     * @param type the Class object representing the field type
-     * @return the current builder instance
+     * Specifies the type of the field being built.
+     * The input should be the fully qualified class name.
+     *
+     * @param type The fully qualified type of the field as a string.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun type(type: Class<*>): JavaFieldBuilder = apply {
-        this.type = type.simpleName
-        parent.importClass(type.name)
-    }
+    fun type(type: String): JavaFieldBuilder<C, A>
 
     /**
-     * Adds a comment to the field
+     * Specifies the type of the field being built using a supplier function.
+     *
+     * This method is an alternative way to set the field type, allowing for dynamic
+     * type resolution at runtime through the provided supplier function.
+     *
+     * @param typeSupplier A function that supplies the fully qualified
+     *                     type of the field as a `String`.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun comment(action: JavaCommentBuilder.() -> Unit = {}) = apply {
-        action(commentBuilder)
-        commentBuilder.checkMySelf()
-    }
+    fun type(typeSupplier: () -> String) = type(typeSupplier())
 
     /**
-     * Adds an annotation to the field
+     * Specifies the type of the field being built using a class reference.
+     *
+     * This is a convenience method that internally uses the [type] method accepting a string,
+     * converting the provided [Class] object's name into a string format and passing it along.
+     * This method is recommended.
+     * @param typeClass The class reference whose name will be used as the type of the field.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun annotation(action: JavaAnnotationBuilder.() -> Unit = {}) = apply {
-        JavaAnnotationBuilder(this)
-            .also { annotationBuilders.add(it) }
-            .also(action).checkMySelf()
-    }
+    fun type(typeClass: Class<*>) = type(typeClass.name)
 
     /**
-     * Makes the field private (default)
+     * Adds a comment to the field by configuring the provided comment builder.
+     *
+     * @param action Configuration block for the comment builder which specifies how the comment should be defined.
+     * @return The current [JavaFieldBuilder] instance for fluent API chaining.
      */
-    fun privateField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier.setPrivate()
-    }
+    fun comment(action: C.() -> Unit): JavaFieldBuilder<C, A>
 
     /**
-     * Makes the field public
+     * Adds an annotation to the field by configuring the provided annotation builder.
+     *
+     * @param action Configuration block for the annotation builder which specifies how the annotation should be defined.
+     * @return The current [JavaFieldBuilder] instance for fluent API chaining.
      */
-    fun publicField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier.setPublic()
-    }
+    fun annotation(action: A.() -> Unit): JavaFieldBuilder<C, A>
 
     /**
-     * Makes the field protected
+     * Makes the field private.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun protectedField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier.setProtected()
-    }
+    fun privateField(): JavaFieldBuilder<C, A>
 
     /**
-     * Makes the field default
+     * Makes the field public.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun defaultField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier.setDefault()
-    }
-
+    fun publicField(): JavaFieldBuilder<C, A>
 
     /**
-     * Makes the field final
+     * Makes the field protected.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun finalField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier or Modifier.FINAL
-    }
+    fun protectedField(): JavaFieldBuilder<C, A>
 
     /**
-     * Makes the field static
+     * Makes the field package-private.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun staticField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier or Modifier.STATIC
-    }
+    fun defaultField(): JavaFieldBuilder<C, A>
 
     /**
-     * Makes the field synchronized
+     * Makes the field static.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun synchronizedField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier or Modifier.SYNCHRONIZED
-    }
+    fun staticField(): JavaFieldBuilder<C, A>
 
     /**
-     * Makes the field volatile
+     * Makes the field final.
+     * @return The current [JavaFieldBuilder] instance for method chaining.
      */
-    fun volatileField(): JavaFieldBuilder = apply {
-        this.modifier = this.modifier or Modifier.VOLATILE
-    }
+    fun finalField(): JavaFieldBuilder<C, A>
 
+    /**
+     * Makes the field volatile.
+     *
+     * @return The current [JavaFieldBuilder] instance for method chaining.
+     */
+    fun volatileField(): JavaFieldBuilder<C, A>
 
-    override fun checkMySelf() {
-        require(name.isNullOrBlank().not()) { "Field name must be initialized and non-blank" }
-        require(type.isNullOrBlank().not()) { "Field type must be initialized and non-blank" }
-    }
+    /**
+     * Makes the field synchronized.
+     *
+     * @return The current [JavaFieldBuilder] instance for method chaining.
+     */
+    fun synchronizedField(): JavaFieldBuilder<C, A>
 
-    override fun parent(): JavaBuilderComponent {
-        return parent
-    }
+    /**
+     * Makes the field transient.
+     *
+     * @return The current [JavaFieldBuilder] instance for method chaining.
+     */
+    fun transientField(): JavaFieldBuilder<C, A>
 
-    override fun toString(): String {
-        return "$commentBuilder\n${annotationBuilders.joinToString("\n")}\n${Modifier.toString(modifier)} $type $name;"
-    }
 
 }
-

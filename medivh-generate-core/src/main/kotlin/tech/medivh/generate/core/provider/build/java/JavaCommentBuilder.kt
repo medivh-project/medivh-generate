@@ -49,5 +49,11 @@ interface JavaCommentBuilder : BuilderComponent {
      */
     fun tag(key: String, line: String): JavaCommentBuilder
 
+    /**
+     * Adds a line of text to the comment.
+     * This method is used to add a line of text to the comment body.
+     */
+    fun context(context: String): JavaCommentBuilder
+
 
 }

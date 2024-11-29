@@ -112,9 +112,9 @@ interface JavaAnnotationBuilder : BuilderComponent {
      * Example: @OuterAnnotation(value = @InnerAnnotation)
      *
      * @param name The parameter name
-     * @param annotationBuilder The nested annotation builder
+     * @param annotationAction The nested annotation builder
      * @return The current builder instance for method chaining
      */
-    fun nestedAnnotation(name: String, annotationBuilder: JavaAnnotationBuilder.() -> Unit): JavaAnnotationBuilder
+    fun nestedAnnotation(name: String, annotationAction: JavaAnnotationBuilder.() -> Unit): JavaAnnotationBuilder
 
 }

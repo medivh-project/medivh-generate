@@ -41,8 +41,8 @@ import tech.medivh.generate.core.provider.build.BuilderComponent
 interface JavaClassBuilder<C, A, F, M> : BuilderComponent
         where C : JavaCommentBuilder,
               A : JavaAnnotationBuilder,
-              F : JavaFieldBuilder<C, A>,
-              M : JavaMethodBuilder<C, A, *> {
+              F : JavaFieldBuilder<*, *>,
+              M : JavaMethodBuilder<*, *, *> {
 
     /**
      * Sets the class name
@@ -113,7 +113,7 @@ interface JavaClassBuilder<C, A, F, M> : BuilderComponent
     /**
      * Adds an inner class to this class
      */
-    fun innerClass(classBuilder: JavaClassBuilder<C, A, F, M>.() -> Unit): JavaClassBuilder<C, A, F, M>
+    fun innerClass(classBuilder: JavaClassBuilder<*, *, *, *>.() -> Unit): JavaClassBuilder<C, A, F, M>
 
     /**
      * Adds a comment to the class

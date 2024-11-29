@@ -22,6 +22,7 @@ include(":medivh-generate-plugin:medivh-generate-plugin-mybatis")
 include(":medivh-generate-plugin:medivh-generate-plugin-mybatis-plus")
 include(":medivh-generate-plugin:medivh-generate-plugin-spring")
 
+
 rootProject.children.forEach { it.configureBuildScriptName() }
 
 fun ProjectDescriptor.configureBuildScriptName() {

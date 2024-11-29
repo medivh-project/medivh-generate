@@ -1,7 +1,5 @@
 package tech.medivh.generate.plugin.mybatisplus
 
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.*
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com

@@ -15,23 +15,23 @@ class BasicJavaCommentBuilder(private val parent: BuilderComponent) : JavaCommen
 
     private var context: String = ""
 
-    override fun multilineComment() = apply {
+    override fun multilineComment(): BasicJavaCommentBuilder = apply {
         this.commentType = CommentType.MULTILINE
     }
 
-    override fun singleLineComment() = apply {
+    override fun singleLineComment(): BasicJavaCommentBuilder = apply {
         this.commentType = CommentType.SINGLE_LINE
     }
 
-    override fun docComment() = apply {
+    override fun docComment(): BasicJavaCommentBuilder = apply {
         this.commentType = CommentType.DOC
     }
 
-    override fun tag(key: String, line: String) = apply {
+    override fun tag(key: String, line: String): BasicJavaCommentBuilder = apply {
         tags[key] = line
     }
 
-    override fun context(context: String) = apply {
+    override fun context(context: String): BasicJavaCommentBuilder = apply {
         this.context = context
     }
 
@@ -46,15 +46,19 @@ class BasicJavaCommentBuilder(private val parent: BuilderComponent) : JavaCommen
     }
 
 
-    override fun text(): String {
-        return StringBuilder(commentType.prefix).apply {
-            context.split("\n").joinToString { "${commentType.linePrefix} $it" }.let { appendLine(it) }
-            tags.forEach { (key, value) ->
-                appendLine(" * @$key $value")
-            }
-        }.append(commentType.suffix).toString()
+    override fun text(): String = buildString {
+        appendLine(commentType.prefix)
+        context.split("\n").joinToString { "${commentType.linePrefix} $it" }.let { appendLine(it) }
+        tags.forEach { (key, value) ->
+            appendLine(" * @$key $value")
+        }
+        appendLine(commentType.suffix)
     }
 
+
+    override fun toString(): String {
+        return text()
+    }
 
     enum class CommentType(val prefix: String, val suffix: String, val linePrefix: String = "") {
         MULTILINE("/*", "*/", "*"),

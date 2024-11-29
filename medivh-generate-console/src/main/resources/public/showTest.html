@@ -6,70 +6,83 @@
     <link rel="stylesheet" href="../static/css/index.css">
     <script src="../static/js/vue.global.js"></script>
     <script src="../static/js/element-plus.full.min.js"></script>
+    <script src="../static/components/RelationalDB.js"></script>
+    <script src="../static/components/MongoDB.js"></script>
+    <script src="../static/components/jsonConfiguration.js"></script>
+    <script src="../static/components/EntityTransform.js"></script>
 
 
 </head>
 <body>
 <div id="app">
-    <div class="page-header">
-        <h1>选择您的数据源</h1>
-        <p>请选择需要处理的数据类型</p>
-    </div>
-    <div class="card-container">
-        <el-row :gutter="20" justify="center">
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="card in cards">
-                <el-card class="menu-card" @click="handleCardClick(card)">
-                    <div class="card-bg">
-                        <div class="card-text">
-                            <h3 class="card-title">{{card.title}}</h3>
+    <div v-if="!selectedCard">
+        <div class="page-header">
+            <h1>选择您的数据源</h1>
+            <p>请选择需要处理的数据类型</p>
+        </div>
+        <div class="card-container">
+            <el-row :gutter="20" justify="center">
+                <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="card in cards">
+                    <el-card class="menu-card" @click="handleCardClick(card)">
+                        <div class="card-bg">
+                            <div class="card-text">
+                                <h3 class="card-title">{{card.title}}</h3>
 
-                            <img :src="card.imageUrl" />
+                                <img :src="card.imageUrl" />
+                            </div>
                         </div>
-                    </div>
-                </el-card>
-            </el-col>
-        </el-row>
+                    </el-card>
+                </el-col>
+            </el-row>
+        </div>
     </div>
+
+    <component v-else :is="currentComponent"></component>
 </div>
 
 <script type="module">
-
-    const {createApp} = Vue;
-    const app = createApp({
-        components: {},
+    const app = Vue.createApp({
+        components: {
+            RelationalDB,
+            MongoDB,
+            JsonConfiguration,
+            EntityTransform
+        },
         data() {
             return {
+                selectedCard: null,
+                currentComponent: null,
                 cards: [
                     {
                         title: '关系型数据库',
                         imageUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azuresqldatabase/azuresqldatabase-original.svg',
-                        active: false
+                        component: 'RelationalDB'
                     },
                     {
                         title: 'MongoDB',
                         imageUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-plain-wordmark.svg',
-                        active: false
+                        component: 'MongoDB'
                     },
                     {
                         title: 'JSON',
                         imageUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/json/json-original.svg",
-                        active: false
+                        component: 'JsonConfiguration'
                     },
                     {
                         title: '实体转',
                         imageUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg",
-                        active: false
+                        component: 'EntityTransform'
                     }
                 ]
             }
         },
         methods: {
             handleCardClick(card) {
-                window.location.href = `/page/${card.title}`;
+                this.selectedCard = card;
+                this.currentComponent = card.component;
             }
         }
     });
-
 
     app.use(ElementPlus);
     app.mount('#app');
@@ -108,11 +121,13 @@
         overflow: hidden;
         transition: all 0.3s ease;
         cursor: pointer;
+        border: 2px solid transparent;
     }
 
     .menu-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2) !important;
+        border-color: #409EFF;
     }
 
     .card-bg {
@@ -124,6 +139,15 @@
         justify-content: space-between;
         text-align: center;
         background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+        transition: all 0.3s ease;
+    }
+
+    .menu-card:hover .card-bg {
+        background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 100%);
+    }
+
+    .menu-card:hover .card-title {
+        color: #409EFF;
     }
 
     .card-text {

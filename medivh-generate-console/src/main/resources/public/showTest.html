@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medivh Generate</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <script src="../static/js/vue.global.js"></script>
+    <script src="../static/js/element-plus.full.min.js"></script>
+
+
+</head>
+<body>
+<div id="app">
+    <div class="page-header">
+        <h1>选择您的数据源</h1>
+        <p>请选择需要处理的数据类型</p>
+    </div>
+    <div class="card-container">
+        <el-row :gutter="20" justify="center">
+            <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="card in cards">
+                <el-card class="menu-card" @click="handleCardClick(card)">
+                    <div class="card-bg">
+                        <div class="card-text">
+                            <h3 class="card-title">{{card.title}}</h3>
+
+                            <img :src="card.imageUrl" />
+                        </div>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
+    </div>
+</div>
+
+<script type="module">
+
+    const {createApp} = Vue;
+    const app = createApp({
+        components: {},
+        data() {
+            return {
+                cards: [
+                    {
+                        title: '关系型数据库',
+                        imageUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azuresqldatabase/azuresqldatabase-original.svg',
+                        active: false
+                    },
+                    {
+                        title: 'MongoDB',
+                        imageUrl: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-plain-wordmark.svg',
+                        active: false
+                    },
+                    {
+                        title: 'JSON',
+                        imageUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/json/json-original.svg",
+                        active: false
+                    },
+                    {
+                        title: '实体转',
+                        imageUrl: "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg",
+                        active: false
+                    }
+                ]
+            }
+        },
+        methods: {
+            handleCardClick(card) {
+                window.location.href = `/page/${card.title}`;
+            }
+        }
+    });
+
+
+    app.use(ElementPlus);
+    app.mount('#app');
+</script>
+
+<style>
+    .page-header {
+        text-align: center;
+        padding: 40px 0;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin-bottom: 40px;
+    }
+
+    .page-header h1 {
+        font-size: 2.5em;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .page-header p {
+        color: #666;
+        font-size: 1.2em;
+    }
+
+    .card-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        min-height: 60vh;
+    }
+
+    .menu-card {
+        height: 300px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .menu-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .card-bg {
+        height: 100%;
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        text-align: center;
+        background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+    }
+
+    .card-text {
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+    }
+
+    .card-text img {
+        width: 120px;
+        height: 120px;
+        object-fit: contain;
+        margin-top: auto;
+    }
+
+    .card-icon {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin-top: auto;
+    }
+
+    .card-title {
+        font-size: 1.5em;
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .card-content {
+        color: #666;
+        font-size: 1.1em;
+        line-height: 1.4;
+    }
+</style>
+</body>
+</html>

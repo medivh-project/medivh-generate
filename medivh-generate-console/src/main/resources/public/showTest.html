@@ -15,7 +15,7 @@
 </head>
 <body>
 <div id="app">
-    <div v-if="!selectedCard">
+    <div v-if="true">
         <div class="page-header">
             <h1>选择您的数据源</h1>
             <p>请选择需要处理的数据类型</p>
@@ -27,7 +27,6 @@
                         <div class="card-bg">
                             <div class="card-text">
                                 <h3 class="card-title">{{card.title}}</h3>
-
                                 <img :src="card.imageUrl" />
                             </div>
                         </div>
@@ -37,7 +36,7 @@
         </div>
     </div>
 
-    <component v-else :is="currentComponent"></component>
+    <component v-if="selectedCard" :is="currentComponent"></component>
 </div>
 
 <script type="module">

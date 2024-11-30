@@ -1,5 +1,5 @@
 subprojects {
     dependencies {
-        implementation(project(":medivh-generate-core"))
+        api(project(":medivh-generate-core"))
     }
 }

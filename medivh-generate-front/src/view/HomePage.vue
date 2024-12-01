@@ -10,7 +10,7 @@
         <el-card class="menu-card" @click="handleCardClick(card)">
           <div class="card-bg">
             <div class="card-text">
-              <h3 class="card-title">{{ card.title }}</h3>
+              <h3 class="card-title">{{ card.component }}</h3>
               <div class="card-content">{{ card.description }}</div>
               <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-plain-wordmark.svg" />
             </div>
@@ -35,6 +35,7 @@ const cards = ref(
       title: '关系型数据库',
       description: '关系型数据库',
       icon: 'DataLine',
+      component: 'HelloWorld',
       imageUrl: 'https://cdn.intuji.com/2023/10/MySQL.png',
       active: false
     },
@@ -42,6 +43,7 @@ const cards = ref(
       title: '非关系型数据库',
       description: '非关系型数据库',
       icon: 'Monitor',
+      component: 'HelloWorld',
       imageUrl: 'https://cdn.intuji.com/2023/10/Monitor.png',
       active: false
     },
@@ -49,6 +51,7 @@ const cards = ref(
       title: 'JSON',
       description: 'JSON',
       icon: 'Shield',
+      component: 'HelloWorld',
       imageUrl: 'https://cdn.intuji.com/2023/10/Security.png',
       active: false
     },
@@ -56,6 +59,7 @@ const cards = ref(
       title: '实体转',
       description: '集中管理您的API配置',
       icon: 'Setting',
+      component: 'HelloWorld',
       imageUrl: 'https://cdn.intuji.com/2023/10/Settings.png',
       active: false
     }
@@ -63,7 +67,9 @@ const cards = ref(
 )
 
 const handleCardClick = (card) => {
-  window.location.href = `/page/${card.title}`;
+  router.push({
+    path: `/page/${encodeURIComponent(card.title)}`
+  })
 }
 
 // 接口测试按钮

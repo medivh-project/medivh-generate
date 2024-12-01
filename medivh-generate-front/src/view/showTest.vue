@@ -1,58 +1,78 @@
 <template>
     <div>
-        <div class="page-header">
-            <h1>选择您的数据源</h1>
-            <p>请选择需要处理的数据类型</p>
-        </div>
-        <div class="card-container">
-            <el-row :gutter="20" justify="center">
-                <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="card in cards" :key="card.title">
-                    <el-card class="menu-card" @click="handleCardClick(card)">
-                        <div class="card-bg">
-                            <div class="card-text">
-                                <h3 class="card-title">{{ card.title }}</h3>
-                                <img :src="card.imageUrl" alt="Card Image" />
+        <div v-if="!selectedCard">
+            <div class="page-header">
+                <h1>选择您的数据源</h1>
+                <p>请选择需要处理的数据类型</p>
+            </div>
+            <div class="card-container">
+                <el-row :gutter="20" justify="center">
+                    <el-col :xs="24" :sm="12" :md="8" :lg="6" v-for="card in cards" :key="card.title">
+                        <el-card class="menu-card" @click="handleCardClick(card)">
+                            <div class="card-bg">
+                                <div class="card-text">
+                                    <h3 class="card-title">{{ card.title }}</h3>
+                                    <img :src="card.imageUrl" alt="Card Image" />
+                                </div>
                             </div>
-                        </div>
-                    </el-card>
-                </el-col>
-            </el-row>
+                        </el-card>
+                    </el-col>
+                </el-row>
+            </div>
         </div>
-        <component v-if="selectedCard" :is="currentComponent" />
+
+        <div v-else>
+            <div class="page-header">
+                <el-button class="back-button" @click="handleBack">
+                    <el-icon><ArrowLeft /></el-icon> 返回
+                </el-button>
+                <h1>{{ selectedCard.title }}配置</h1>
+            </div>
+            <component :is="currentComponent" />
+        </div>
     </div>
 </template>
   
 <script setup>
 import { ref, markRaw } from 'vue';
-import HelloWorld from '../components/HelloWorld.vue';
+import { ArrowLeft } from '@element-plus/icons-vue';
+import DatabaseConfig from '../components/DatabaseConfig.vue';
+import MongoDBConfig from '../components/MongoDBConfig.vue';
+import JsonConfig from '../components/JsonConfig.vue';
+import JavaBeanConfig from '../components/JavaBeanConfig.vue';
 
 const selectedCard = ref(null);
 const currentComponent = ref(null);
+
+const handleBack = () => {
+    selectedCard.value = null;
+    currentComponent.value = null;
+};
 
 const cards = [
     {
         title: '关系型数据库',
         imageUrl:
             'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/azuresqldatabase/azuresqldatabase-original.svg',
-        component: "HelloWorld",
+        component: DatabaseConfig,
     },
     {
         title: 'MongoDB',
         imageUrl:
             'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mongodb/mongodb-plain-wordmark.svg',
-        component: "HelloWorld",
+        component: MongoDBConfig,
     },
     {
         title: 'JSON',
         imageUrl:
             'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/json/json-original.svg',
-        component: "HelloWorld",
+        component: JsonConfig,
     },
     {
-        title: '实体转',
+        title: '实体转换',
         imageUrl:
             'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg',
-        component: "HelloWorld",
+        component: JavaBeanConfig,
     },
 ];
 
@@ -68,6 +88,7 @@ const handleCardClick = (card) => {
     padding: 40px 0;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     margin-bottom: 40px;
+    position: relative;
 
     h1 {
         font-size: 2.5em;
@@ -143,6 +164,12 @@ const handleCardClick = (card) => {
         color: #2c3e50;
         margin-bottom: 10px;
     }
+}
+
+.back-button {
+    position: absolute;
+    left: 20px;
+    top: 20px;
 }
 </style>
   

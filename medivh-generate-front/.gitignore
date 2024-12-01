@@ -1,0 +1,49 @@
+# Node.js
+/node_modules/
+
+# Vite
+/dist/
+.vite/
+
+# Vue.js
+*.log
+*.log.*
+*.tsbuildinfo
+*.swp
+
+# npm package lock files
+package-lock.json
+yarn.lock
+
+# Local environment config files
+.env
+.env.local
+.env.*.local
+
+# Vite cache
+.vite/
+
+# IDEs and editors
+# VSCode
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# JetBrains (IntelliJ, WebStorm, etc.)
+.idea/
+
+# Optional TypeScript types
+*.d.ts
+
+# Test files
+/tests/
+
+# Coverage directory for Jest
+/coverage/
+
+# npm and Yarn
+.pnp.*

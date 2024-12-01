@@ -39,7 +39,7 @@ class BasicJavaAnnotationBuilder(private val parent: BuilderComponent) : JavaAnn
 
     override fun arrayParamString(name: String, values: List<String>): JavaAnnotationBuilder = apply {
         check(name !in parameters) { "Annotation parameter $name already exists" }
-        parameters[name] = "{${values.joinToString(", ") { "\"$it\"" }}}"
+        parameters[name] = values.joinToString(prefix = "{", postfix = "}") { "\"$it\"" }
     }
 
     override fun classParam(name: String, className: String): JavaAnnotationBuilder = apply {
@@ -59,6 +59,10 @@ class BasicJavaAnnotationBuilder(private val parent: BuilderComponent) : JavaAnn
 
     override fun checkMySelf() {
         require(!annotationName.isNullOrBlank()) { "Annotation name must not be null or blank" }
+        parameters.forEach { (key, value) ->
+            require(key.isNotBlank()) { "Parameter key must not be blank" }
+            require(value.isNotBlank()) { "Parameter value for $key must not be blank" }
+        }
     }
 
     override fun parent(): BuilderComponent {
@@ -74,19 +78,27 @@ class BasicJavaAnnotationBuilder(private val parent: BuilderComponent) : JavaAnn
         }
     }
 
-
-    override fun hashCode(): Int {
-        return annotationName.hashCode()
-    }
-
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is BasicJavaAnnotationBuilder) return false
+        if (javaClass != other?.javaClass) return false
 
-        return annotationName == other.annotationName
+        other as BasicJavaAnnotationBuilder
+
+        if (annotationName != other.annotationName) return false
+        if (parameters != other.parameters) return false
+
+        return true
     }
+
+    override fun hashCode(): Int {
+        var result = annotationName?.hashCode() ?: 0
+        result = 31 * result + parameters.hashCode()
+        return result
+    }
+
 
     override fun toString(): String {
         return text()
     }
+
 }

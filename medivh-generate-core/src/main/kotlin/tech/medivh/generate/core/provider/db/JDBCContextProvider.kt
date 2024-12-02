@@ -28,7 +28,7 @@ class JDBCContextProvider(
     private val Database.columns get() = this.sequenceOf(Columns)
 
     override fun computeContext(): List<GeneratorContext> {
-        val columns = database.columns.filter { it.db eq database.name }.groupBy { it.tableName }
+        val columns = database.columns.filter { it.db eq database.name }.groupBy({ it.tableName }, { it.column() })
         return database.tables
             .filter { it.db eq database.name }
             .map { it.table().apply { this.columns.addAll(columns[it.tableName] ?: emptyList()) } }

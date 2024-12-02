@@ -7,9 +7,9 @@ import tech.medivh.generate.core.convert
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class ColumnProperties(column: Column) : Column by column {
+class ColumnDescProperties(ormColumnDesc: ColumnDesc) : ColumnDesc by ormColumnDesc {
 
-    val fieldClass = TypeConvertor.convert(column.name)
+    val fieldClass = TypeConvertor.convert(ormColumnDesc.name)
 
     val fieldName = fieldClass.simpleName
 

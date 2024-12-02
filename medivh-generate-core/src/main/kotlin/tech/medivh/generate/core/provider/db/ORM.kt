@@ -31,7 +31,7 @@ interface TableDesc : Entity<TableDesc> {
     }
 }
 
-object Columns : Table<Column>("columns", schema = "information_schema") {
+object Columns : Table<ColumnDesc>("columns", schema = "information_schema") {
     // tableName is super field name
     val table_name = varchar("TABLE_NAME").bindTo { it.tableName }
     val db = varchar("TABLE_SCHEMA")
@@ -42,11 +42,15 @@ object Columns : Table<Column>("columns", schema = "information_schema") {
     val pk = varchar("COLUMN_KEY").transform({ it == "PRI" }, { if (it) "PRI" else "" }).bindTo { it.pk }
 }
 
-interface Column : Entity<Column> {
+interface ColumnDesc : Entity<ColumnDesc> {
     val tableName: String
     val name: String
     val notNull: Boolean
     val pk: Boolean
     val dataType: String
     val comment: String?
+
+    fun column(): Column {
+        return Column(tableName, name, notNull, pk, dataType, comment)
+    }
 }

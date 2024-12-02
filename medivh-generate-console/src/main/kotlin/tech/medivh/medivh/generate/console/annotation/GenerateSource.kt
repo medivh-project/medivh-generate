@@ -1,8 +1,10 @@
 package tech.medivh.medivh.generate.console.annotation
 
+
 /**
- * @author gongxuanzhangmelt@gmail.com
- */
+ * @author gxz gongxuanzhangmelt@gmail.com
+ **/
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class GenerateSource
+annotation class GenerateSource {
+}

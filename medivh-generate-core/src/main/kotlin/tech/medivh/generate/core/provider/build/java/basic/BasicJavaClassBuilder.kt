@@ -8,7 +8,8 @@ import tech.medivh.generate.core.provider.build.java.JavaClassBuilder
 /**
  * @author gongxuanzhangmelt@gmail.com
  */
-class BasicJavaClassBuilder : JavaClassBuilder<BasicJavaCommentBuilder,BasicJavaAnnotationBuilder,BasicJavaFieldBuilder,BasicJavaMethodBuilder>{
+class BasicJavaClassBuilder :
+    JavaClassBuilder<BasicJavaCommentBuilder, BasicJavaAnnotationBuilder, BasicJavaFieldBuilder, BasicJavaMethodBuilder> {
     override fun name(name: String): BasicJavaClassBuilder {
         TODO("Not yet implemented")
     }

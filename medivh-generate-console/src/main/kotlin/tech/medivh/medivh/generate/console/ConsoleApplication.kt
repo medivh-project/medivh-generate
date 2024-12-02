@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ConsoleApplication
 
 fun main(args: Array<String>) {
-	runApplication<ConsoleApplication>(*args)
+    runApplication<ConsoleApplication>(*args)
 }

@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: medivh-generate-console
+server:
+  port: 8888
+  servlet:
+    context-path: /console/api

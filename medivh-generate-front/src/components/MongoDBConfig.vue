@@ -1,40 +1,47 @@
 <template>
-  <div class="database-config">
-    <el-form 
-      :model="formData" 
-      :rules="rules"
-      ref="formRef"
-      label-width="120px" 
-      class="config-form"
-    >
-      <el-form-item label="连接字符串" prop="uri">
-        <el-input 
-          v-model="formData.uri" 
-          placeholder="mongodb://username:password@host:port/database"
-          type="textarea"
-          :rows="2"
-        />
-      </el-form-item>
-      
-      <el-form-item label="数据库名称" prop="database">
-        <el-input v-model="formData.database" placeholder="请输入数据库名称" />
-      </el-form-item>
-      
-      <el-form-item label="集合名称" prop="collection">
-        <el-input v-model="formData.collection" placeholder="请输入集合名称" />
-      </el-form-item>
-      
-      <el-form-item>
-        <el-button type="primary" @click="testConnection">测试连接</el-button>
-        <el-button type="success" @click="saveConfig">保存配置</el-button>
-      </el-form-item>
-    </el-form>
+  <div class="mongodb-config">
+    <h2>MongoDB配置</h2>
+    <div class="config-content">
+      <el-form 
+        :model="formData" 
+        :rules="rules"
+        ref="formRef"
+        label-width="120px" 
+        class="config-form"
+      >
+        <el-form-item label="连接字符串" prop="uri">
+          <el-input 
+            v-model="formData.uri" 
+            placeholder="mongodb://username:password@host:port/database"
+            type="textarea"
+            :rows="2"
+          />
+        </el-form-item>
+        
+        <el-form-item label="数据库名称" prop="database">
+          <el-input v-model="formData.database" placeholder="请输入数据库名称" />
+        </el-form-item>
+        
+        <el-form-item label="集合名称" prop="collection">
+          <el-input v-model="formData.collection" placeholder="请输入集合名称" />
+        </el-form-item>
+        
+        <el-form-item>
+          <el-button type="primary" @click="testConnection">测试连接</el-button>
+          <el-button type="success" @click="saveConfig">保存配置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    
+    <!-- 遮罩层 -->
+    <not-supported-overlay />
   </div>
 </template>
 
 <script setup>
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
+import NotSupportedOverlay from './NotSupportedOverlay.vue'
 
 const formRef = ref(null)
 const formData = reactive({
@@ -81,6 +88,15 @@ const saveConfig = async () => {
 </script>
 
 <style scoped>
+.mongodb-config {
+  position: relative;
+  padding: 20px;
+}
+
+.config-content {
+  min-height: 400px;
+}
+
 .database-config {
   max-width: 600px;
   margin: 20px auto;
@@ -93,4 +109,4 @@ const saveConfig = async () => {
   border-radius: 8px;
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
-</style> 
+</style>

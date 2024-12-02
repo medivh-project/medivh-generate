@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: '/api',
+    baseURL: 'http://localhost:8888/console/api',
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
@@ -10,9 +10,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `${token}`;
+        const sourceToken = localStorage.getItem('sourceToken');
+        if (sourceToken) {
+            config.headers.sourceToken = `${sourceToken}`;
         }
         config.headers['Content-Type'] = config.headers['Content-Type'] || 'application/json';
 

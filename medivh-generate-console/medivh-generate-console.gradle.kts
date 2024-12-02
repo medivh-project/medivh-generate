@@ -16,10 +16,13 @@ repositories {
     mavenCentral()
 }
 
+val ktormVersion: String by medivhVersion
 dependencies {
     api(project(":medivh-generate-plugin:medivh-generate-plugin-mybatis-plus"))
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.ktorm:ktorm-core:${ktormVersion}")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")

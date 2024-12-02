@@ -1,33 +1,46 @@
 package tech.medivh.medivh.generate.console.controller
 
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import tech.medivh.generate.core.provider.db.Table
 import tech.medivh.medivh.generate.console.annotation.GenerateSource
+import tech.medivh.medivh.generate.console.component.DataSourceResolver
+import tech.medivh.medivh.generate.console.component.SourceManager
 import tech.medivh.medivh.generate.console.core.DataSource
-import tech.medivh.medivh.generate.console.core.SourceFacade
 import tech.medivh.medivh.generate.console.core.Result
+import tech.medivh.medivh.generate.console.core.SourceFacade
 
 /**
  * @author gongxuanzhangmelt@gmail.com
  */
 @RestController
 @RequestMapping("/generate")
-class GenerateController {
+class GenerateController(
+    resolver: List<DataSourceResolver>,
+    private val sourceManager: SourceManager
+) {
+
+    val dataSourceResolverMap = resolver.associateBy { it.support() }
 
     @PostMapping("/test_connection/{strategy}")
     fun testConnection(
         @PathVariable("strategy") strategy: DataSource,
-        @GenerateSource dataSource: SourceFacade
+        @RequestBody json: Map<String, Any>
     ): Result<String> {
         try {
-            dataSource.testConnection()
+            val source = dataSourceResolverMap[strategy]?.resolve(json)
+                ?: throw IllegalArgumentException("unsupported strategy $strategy")
+            source.testConnection()
+            sourceManager.registerSource(source)
+            return Result.success()
         } catch (e: Exception) {
-            Result.fail(message = e.message)
+            return Result.fail(message = e.message)
         }
-        return Result.success("success")
+    }
+
+
+    @GetMapping("/tables")
+    fun getTable(@GenerateSource sourceFacade: SourceFacade): Result<List<Table>> {
+        return Result.success(sourceFacade.getTables())
     }
 
 }

@@ -6,16 +6,16 @@ package tech.medivh.generate.core.engine
  **/
 object ModuleLoader {
 
-    private val modules = mutableListOf<GenerateModule>()
+    private val modules = mutableListOf<GeneratePlugin>()
 
-    fun installModule(module: GenerateModule) {
+    fun installModule(module: GeneratePlugin) {
         modules.add(module)
     }
 
     /**
      * At present, there is only one way to register, and there may be many more in the future
      */
-    fun loadModules(): List<GenerateModule> {
+    fun loadModules(): List<GeneratePlugin> {
         return modules.toList()
     }
 }

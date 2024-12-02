@@ -1,6 +1,6 @@
 package tech.medivh.medivh.generate.console.component
 
-import tech.medivh.medivh.generate.console.core.DataSource
+import tech.medivh.generate.core.source.SourceType
 import tech.medivh.medivh.generate.console.core.SourceFacade
 
 
@@ -9,7 +9,7 @@ import tech.medivh.medivh.generate.console.core.SourceFacade
  **/
 interface DataSourceResolver {
 
-    fun support(): DataSource
+    fun support(): SourceType
 
     fun resolve(requestJson: Map<String, Any>): SourceFacade
 

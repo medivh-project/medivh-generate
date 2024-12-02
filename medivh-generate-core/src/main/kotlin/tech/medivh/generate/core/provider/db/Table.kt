@@ -1,5 +1,9 @@
 package tech.medivh.generate.core.provider.db
 
+import com.alibaba.fastjson2.JSON
+import com.alibaba.fastjson2.JSONObject
+import tech.medivh.generate.core.env.BaseGenerateContext
+import tech.medivh.generate.core.env.GeneratorContext
 import java.time.LocalDateTime
 
 /**
@@ -12,5 +16,10 @@ data class Table(
     val db: String,
     val comment: String?,
     val columns: MutableList<Column> = mutableListOf()
-)
+) {
+    fun toGenerateContext(): GeneratorContext {
+        val json = JSON.toJSON(TableProperties(this)) as JSONObject
+        return BaseGenerateContext().apply { putAll(json) }
+    }
+}
 

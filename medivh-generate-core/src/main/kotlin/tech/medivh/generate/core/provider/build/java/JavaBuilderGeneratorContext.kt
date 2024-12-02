@@ -1,11 +1,11 @@
 package tech.medivh.generate.core.provider.build.java
 
-import tech.medivh.generate.core.env.AbstractGenerateContext
+import tech.medivh.generate.core.env.BaseGenerateContext
 import tech.medivh.generate.core.event.Bus
 import tech.medivh.generate.core.event.EventPublisher
 
 /**
- * Java Builder生成器上下文
+ * Java Builder
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
 class JavaBuilderGeneratorContext(
@@ -15,7 +15,7 @@ class JavaBuilderGeneratorContext(
     var imports: MutableSet<String> = mutableSetOf(),
     var fields: MutableList<String> = mutableListOf(),
     var annotations: MutableList<String> = mutableListOf()
-) : AbstractGenerateContext(publisher) {
+) : BaseGenerateContext(publisher) {
 
     /**
      * 添加导入

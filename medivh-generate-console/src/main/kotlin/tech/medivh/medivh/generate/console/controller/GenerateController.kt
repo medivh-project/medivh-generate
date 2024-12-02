@@ -5,7 +5,7 @@ import tech.medivh.generate.core.provider.db.Table
 import tech.medivh.medivh.generate.console.annotation.GenerateSource
 import tech.medivh.medivh.generate.console.component.DataSourceResolver
 import tech.medivh.medivh.generate.console.component.SourceManager
-import tech.medivh.medivh.generate.console.core.DataSource
+import tech.medivh.generate.core.source.SourceType
 import tech.medivh.medivh.generate.console.core.Result
 import tech.medivh.medivh.generate.console.core.SourceFacade
 
@@ -23,7 +23,7 @@ class GenerateController(
 
     @PostMapping("/test_connection/{strategy}")
     fun testConnection(
-        @PathVariable("strategy") strategy: DataSource,
+        @PathVariable("strategy") strategy: SourceType,
         @RequestBody json: Map<String, Any>
     ): Result<String> {
         try {

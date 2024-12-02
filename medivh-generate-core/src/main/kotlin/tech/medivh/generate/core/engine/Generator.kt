@@ -5,25 +5,24 @@ import tech.medivh.generate.core.SimpleFileWriter
 import tech.medivh.generate.core.Template
 import tech.medivh.generate.core.WriteRule
 import tech.medivh.generate.core.env.GeneratorContext
+import tech.medivh.generate.core.provider.TemplateProvider
 import tech.medivh.generate.core.provider.build.java.JavaBuilderGeneratorContext
+import tech.medivh.generate.core.source.DataSourceFacade
 import java.io.File
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-object MedivhGenerator {
+class Generator(private val sourceFacade: DataSourceFacade, private val templateProvider: TemplateProvider) {
 
     var writeRule: WriteRule = TempWriteRule
 
     fun generate() {
-        val modules = ModuleLoader.loadModules()
-        modules.forEach { module ->
-            val templates = module.templateProvider().getTemplates()
-            val contexts = module.contextProvider().computeContext()
-            templates.zip(contexts, this::merge).forEach { fileWriter ->
-                fileWriter.write()
-            }
+        val templates = templateProvider.getTemplates()
+        val contexts = sourceFacade.computeContext()
+        templates.zip(contexts, this::merge).forEach { fileWriter ->
+            fileWriter.write()
         }
     }
 

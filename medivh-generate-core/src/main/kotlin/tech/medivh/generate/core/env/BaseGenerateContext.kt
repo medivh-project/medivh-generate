@@ -7,7 +7,7 @@ import tech.medivh.generate.core.event.EventPublisher
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-abstract class AbstractGenerateContext(
+open class BaseGenerateContext(
     private val publisher: Bus = EventPublisher()
 ) : GeneratorContext, Bus by publisher {
 

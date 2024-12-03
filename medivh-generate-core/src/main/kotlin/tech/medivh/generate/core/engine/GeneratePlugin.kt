@@ -2,13 +2,18 @@ package tech.medivh.generate.core.engine
 
 import tech.medivh.generate.core.ContextProvider
 import tech.medivh.generate.core.provider.TemplateProvider
-import java.io.File
+import tech.medivh.generate.core.source.DataSourceFacade
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
 interface GeneratePlugin {
+
+    /**
+     * this function will auto invoke after instance created
+     */
+    fun setDataSource(dataSourceFacade: DataSourceFacade)
 
     fun pluginName(): String
 
@@ -18,14 +23,13 @@ interface GeneratePlugin {
 
     /**
      * generate all file
-     * @return target file dir
      */
-    fun generateAll(): File
+    fun generateAll()
 
     /**
      * generate table base file.
      * @param template This parameter is defined by the instance [GeneratePlugin]
      */
-    fun generate(tableName: String, template: String): File
+    fun generate(tableName: String, template: String)
 
 }

@@ -1,28 +1,29 @@
 package tech.medivh.generate.core.engine
 
-import tech.medivh.generate.core.FileWriter
-import tech.medivh.generate.core.SimpleFileWriter
-import tech.medivh.generate.core.Template
-import tech.medivh.generate.core.WriteRule
+import tech.medivh.generate.core.*
 import tech.medivh.generate.core.env.GeneratorContext
 import tech.medivh.generate.core.provider.TemplateProvider
-import tech.medivh.generate.core.provider.build.java.JavaBuilderGeneratorContext
-import tech.medivh.generate.core.source.DataSourceFacade
 import java.io.File
+import java.nio.file.Paths
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class Generator(private val sourceFacade: DataSourceFacade, private val templateProvider: TemplateProvider) {
+class Generator(
+    private val contextProvider: ContextProvider,
+    private val templateProvider: TemplateProvider,
+    private val writeRule: WriteRule = DesktopWriteRule
+) {
 
-    var writeRule: WriteRule = TempWriteRule
 
     fun generate() {
         val templates = templateProvider.getTemplates()
-        val contexts = sourceFacade.computeContext()
-        templates.zip(contexts, this::merge).forEach { fileWriter ->
-            fileWriter.write()
+        val contexts = contextProvider.computeContext()
+        templates.forEach {
+            contexts.forEach { context ->
+                merge(it, context).write()
+            }
         }
     }
 
@@ -32,23 +33,31 @@ class Generator(private val sourceFacade: DataSourceFacade, private val template
 
 }
 
-// todo
-object TempWriteRule : WriteRule {
+object DesktopWriteRule : WriteRule {
+
+    private val desktopDir = getDesktopFolder()
 
     override fun overwrite(): Boolean {
         return true
     }
 
     override fun targetFile(template: Template, context: GeneratorContext): File {
-        if (context is JavaBuilderGeneratorContext) {
-            TODO()
-//            return File("${context.builder.className}.java")
-        }
-        TODO()
+        return desktopDir.resolve("${context["className"]}${template.templateName().substringBeforeLast(".")}")
     }
+
 
     override fun format(): Boolean {
         return true
+    }
+
+    private fun getDesktopFolder(): File {
+        val userHome = System.getProperty("user.home") // 获取用户主目录
+        Paths.get(userHome, "Desktop").toFile().let {
+            if (!it.exists()) {
+                it.mkdirs()
+            }
+            return it
+        }
     }
 
 }

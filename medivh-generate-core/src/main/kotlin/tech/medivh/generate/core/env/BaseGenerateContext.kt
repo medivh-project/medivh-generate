@@ -2,12 +2,14 @@ package tech.medivh.generate.core.env
 
 import tech.medivh.generate.core.event.Bus
 import tech.medivh.generate.core.event.EventPublisher
+import tech.medivh.generate.core.provider.db.Table
 
 
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
 open class BaseGenerateContext(
+    private val table: Table,
     private val publisher: Bus = EventPublisher()
 ) : GeneratorContext, Bus by publisher {
 
@@ -36,5 +38,9 @@ open class BaseGenerateContext(
 
     override fun putAll(properties: Map<String, Any>) {
         return vmContext.putAll(properties)
+    }
+
+    override fun table(): Table {
+        return table
     }
 }

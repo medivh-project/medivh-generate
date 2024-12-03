@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * ${comments}
+ * ${comment}
  *
  * @author ${author}
  */
@@ -33,7 +33,7 @@ public class ${className}Controller extends BaseController{
     private ${className}Service ${classname}Service;
 
     /**
-     * 查询${comments}列表
+     * 查询${comment}列表
      */
     @GetMapping("/list")
     public ResultModel<Page<${className}>> list(${className}Query query) {
@@ -45,24 +45,24 @@ public class ${className}Controller extends BaseController{
 
 
     /**
-     * 查询${comments}详细信息
+     * 查询${comment}详细信息
      */
-    @GetMapping("/info/{${pk.attrname}}")
-    public ResultModel<${className}> info(@PathVariable("${pk.attrname}") ${pk.attrType} ${pk.attrname}) {
-        return ResultModel.success(${classname}Service.getById(${pk.attrname}));
+    @GetMapping("/info/{${pk.fieldname}}")
+    public ResultModel<${className}> info(@PathVariable("${pk.fieldname}") ${pk.fieldType} ${pk.fieldname}) {
+        return ResultModel.success(${classname}Service.getById(${pk.fieldname}));
     }
 
     /**
-     * 保存${comments}
+     * 保存${comment}
      */
     @PostMapping("/save")
-    public ResultModel<${pk.attrType}> save(@RequestBody ${className} ${classname}) {
+    public ResultModel<${pk.fieldType}> save(@RequestBody ${className} ${classname}) {
         ${classname}Service.save(${classname});
-        return ResultModel.success(${classname}.get${pk.attrName}());
+        return ResultModel.success(${classname}.get${pk.fieldname}());
     }
 
     /**
-     * 修改${comments}
+     * 修改${comment}
      */
     @PutMapping("/update")
     public ResultModel<Void> update(@RequestBody ${className} ${classname}) {
@@ -71,7 +71,7 @@ public class ${className}Controller extends BaseController{
     }
 
     /**
-     * 删除${comments}
+     * 删除${comment}
      */
     @DeleteMapping("/delete")
     public ResultModel<Void> delete(@RequestBody List<Integer> ids) {
@@ -80,7 +80,7 @@ public class ${className}Controller extends BaseController{
     }
 
     /**
-     * 删除${comments}
+     * 删除${comment}
      */
     @DeleteMapping("/delete/{id}")
     public ResultModel<Void> deleteById(@PathVariable("id") Integer id) {

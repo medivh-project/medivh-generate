@@ -8,8 +8,9 @@ import tech.medivh.generate.core.env.BaseGenerateContext
 /**
  * @author gxz gongxuanzhangmelt@gmail.com
  **/
-class JDBCGenerateContext(table: Table) : BaseGenerateContext() {
+class JDBCGenerateContext(table: Table) : BaseGenerateContext(table) {
     init {
         this.putAll(JSON.toJSON(TableProperties(table)) as JSONObject)
     }
+
 }

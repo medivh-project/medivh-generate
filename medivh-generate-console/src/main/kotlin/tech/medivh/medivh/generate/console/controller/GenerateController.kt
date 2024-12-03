@@ -2,10 +2,10 @@ package tech.medivh.medivh.generate.console.controller
 
 import org.springframework.web.bind.annotation.*
 import tech.medivh.generate.core.provider.db.Table
+import tech.medivh.generate.core.source.SourceType
 import tech.medivh.medivh.generate.console.annotation.GenerateSource
 import tech.medivh.medivh.generate.console.component.DataSourceResolver
 import tech.medivh.medivh.generate.console.component.SourceManager
-import tech.medivh.generate.core.source.SourceType
 import tech.medivh.medivh.generate.console.core.Result
 import tech.medivh.medivh.generate.console.core.SourceFacade
 

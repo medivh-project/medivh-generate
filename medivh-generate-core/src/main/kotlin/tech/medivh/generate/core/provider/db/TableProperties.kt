@@ -31,12 +31,13 @@ class TableProperties(table: Table) {
      * because multiple primary key may be a junction table.
      * pk is not a list is better to use in templates.
      */
-    var pk: Column = table.columns.firstOrNull { it.pk } ?: table.columns.first()
+    var pk: ColumnProperties = table.columns.firstOrNull { it.pk }?.let { ColumnProperties(it) }
+        ?: table.columns.first().let { ColumnProperties(it) }
 
     /**
      * Non-primary key column
      */
-    var columns = table.columns.filter { !it.pk }
+    var columns = table.columns.filter { !it.pk }.map { ColumnProperties(it) }
 
     /**
      * this table is a relation table
@@ -44,5 +45,7 @@ class TableProperties(table: Table) {
     var junctionTable = false
 
     var author = System.getProperty("user.name")
+
+    var tableName = table.tableName
 
 }

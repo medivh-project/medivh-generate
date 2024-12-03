@@ -15,8 +15,8 @@ import java.time.Instant;
 import lombok.Data;
 
 /**
- * ${comments}
- * 
+ * ${comment}
+ *
  * @author ${author}
  */
 @Data
@@ -24,14 +24,14 @@ import lombok.Data;
 public class ${className} extends BaseEntity {
 
 #foreach ($column in $columns)
-	#if(${column.columnName} !='create_by' && $column.columnName!='create_time' && $column.columnName!='update_by' && $column.columnName!='update_time' && $column.columnName!='remark')
+	#if(${column.name} !='create_by' && $column.name!='create_time' && $column.name!='update_by' && $column.name!='update_time' && $column.name!='remark')
 	/**
-	 * $column.comments
+	 * $column.comment
 	 */
-	#if($column.columnName == $pk.columnName)
+	#if($column.name == $pk.name)
 @TableId
 	#end
-private $column.attrType $column.attrname;
+private $column.fieldType $column.fieldname;
 	#end
 
 #end

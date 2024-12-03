@@ -84,7 +84,8 @@ class ControllerBuilder {
 
     private fun generateCrudMethods(sb: StringBuilder) {
         // 添加查询方法
-        sb.append("""
+        sb.append(
+            """
             @GetMapping("/{id}")
             fun getById(@PathVariable id: Long): $entityClass {
                 return ${serviceField}.getById(id)
@@ -104,6 +105,7 @@ class ControllerBuilder {
             fun deleteById(@PathVariable id: Long): Boolean {
                 return ${serviceField}.removeById(id)
             }
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 }

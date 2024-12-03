@@ -16,7 +16,7 @@ import java.time.Instant;
 import lombok.Data;
 
 /**
- * ${comments}
+ * ${comment}
  *
  * @author ${author}
  */
@@ -26,11 +26,11 @@ public class ${className}Query extends BaseQuery<${className}> {
 #foreach ($column in $columns)
 	#if(${column.columnName} !='create_by' && $column.columnName!='create_time' && $column.columnName!='update_by' && $column.columnName!='update_time' && $column.columnName!='remark')
 	/**
-	 * $column.comments
+	 * $column.comment
 	 */
 	#if($column.columnName == $pk.columnName)
 	#end
-private $column.attrType $column.attrname;
+private $column.fieldType $column.fieldname;
 	#end
 
 #end
@@ -40,7 +40,7 @@ private $column.attrType $column.attrname;
 		return Wrappers.lambdaQuery(${className}.class)
 		#foreach ($column in $columns)
 			#if(${column.canEquals})
-				.eq($column.attrname != null, ${className}::get$column.attrName, $column.attrname)
+				.eq($column.fieldname != null, ${className}::get$column.fieldname, $column.fieldname)
 			#end
 		#end
 		;

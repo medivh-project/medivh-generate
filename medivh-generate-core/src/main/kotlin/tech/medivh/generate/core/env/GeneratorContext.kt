@@ -2,6 +2,7 @@ package tech.medivh.generate.core.env
 
 import org.apache.velocity.context.Context
 import tech.medivh.generate.core.provider.TemplateProvider
+import tech.medivh.generate.core.provider.db.Table
 
 
 /**
@@ -12,5 +13,7 @@ import tech.medivh.generate.core.provider.TemplateProvider
 interface GeneratorContext : Context {
 
     fun putAll(properties: Map<String, Any>)
+
+    fun table(): Table
 
 }

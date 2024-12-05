@@ -1,8 +1,10 @@
-package tech.medivh.generate.core.provider.db
+package tech.medivh.generate.core.provider.db.jdbc
 
 import com.alibaba.fastjson2.JSON
 import com.alibaba.fastjson2.JSONObject
 import tech.medivh.generate.core.env.BaseGenerateContext
+import tech.medivh.generate.core.provider.db.Table
+import tech.medivh.generate.core.provider.db.TableProperties
 
 
 /**

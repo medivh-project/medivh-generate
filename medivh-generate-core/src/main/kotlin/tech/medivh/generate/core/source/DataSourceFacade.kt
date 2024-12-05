@@ -2,7 +2,7 @@ package tech.medivh.generate.core.source
 
 import tech.medivh.generate.core.ContextProvider
 import tech.medivh.generate.core.env.GeneratorContext
-import tech.medivh.generate.core.provider.db.JDBCGenerateContext
+import tech.medivh.generate.core.provider.db.jdbc.JDBCGenerateContext
 import tech.medivh.generate.core.provider.db.Table
 
 

@@ -4,6 +4,7 @@ val mockitoKotlinVersion: String by medivhVersion
 val fastjson2Version: String by medivhVersion
 val mysqlConnectorJVersion: String by medivhVersion
 val googleFormatVersion: String by medivhVersion
+val mongodbDriverVersion: String by medivhVersion
 dependencies {
     api("org.apache.velocity:velocity-engine-core:${velocityVersion}")
     api("org.ktorm:ktorm-core:${ktormVersion}")
@@ -11,7 +12,8 @@ dependencies {
     api("org.jetbrains.kotlin:kotlin-reflect")
     api("com.google.googlejavaformat:google-java-format:$googleFormatVersion")
     api("com.mysql:mysql-connector-j:$mysqlConnectorJVersion")
+    api("org.mongodb:mongodb-driver-kotlin-sync:${mongodbDriverVersion}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:${mockitoKotlinVersion}")
+    implementation("org.mongodb:bson-kotlin:${mockitoKotlinVersion}")
     testImplementation(kotlin("test"))
 }
-

@@ -13,7 +13,7 @@ dependencies {
     api("com.google.googlejavaformat:google-java-format:$googleFormatVersion")
     api("com.mysql:mysql-connector-j:$mysqlConnectorJVersion")
     api("org.mongodb:mongodb-driver-kotlin-sync:${mongodbDriverVersion}")
+    api("org.mongodb:bson-kotlin:${mongodbDriverVersion}")
     testImplementation("org.mockito.kotlin:mockito-kotlin:${mockitoKotlinVersion}")
-    implementation("org.mongodb:bson-kotlin:${mockitoKotlinVersion}")
     testImplementation(kotlin("test"))
 }

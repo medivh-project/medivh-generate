@@ -4,8 +4,14 @@ import com.mongodb.MongoClientSettings
 import com.mongodb.MongoCredential
 import com.mongodb.ServerAddress
 import com.mongodb.client.MongoClients
+import com.mongodb.client.model.Accumulators.addToSet
+import com.mongodb.client.model.Accumulators.sum
+import com.mongodb.client.model.Projections
+import com.mongodb.client.model.Sorts
 import com.mongodb.kotlin.client.MongoClient
 import com.mongodb.kotlin.client.MongoDatabase
+import org.bson.Document
+import org.litote.kmongo.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import tech.medivh.generate.core.provider.db.Table
@@ -41,8 +47,28 @@ class MongoDBDataSource(configuration: MongoConfiguration) : DataSourceFacade {
     }
 
     override fun getTables(): List<Table> {
-        database.listCollectionNames().forEach { log.info(it) }
-        return emptyList()
+        return database.listCollectionNames().map { name ->
+            val collection = MongoCollection(name, database.name, "WiredTiger", null)
+            collection.columns.addAll(scanMongoCollectionDetail(name))
+            collection.adaptToTable()
+        }.toList()
+    }
+
+    private fun scanMongoCollectionDetail(collectionName: String): List<MongoColumn> {
+        val collection = database.getCollection<Document>(collectionName)
+        val pipeline = listOf(
+            sample(200),
+            project(Projections.computed("fields", Document("\$objectToArray", ("\$\$ROOT")))),
+            unwind("\$fields"),
+            group(
+                "\$fields.k",
+                addToSet("types", Document("\$type", "\$fields.v")),
+                sum("count", 1)
+            ),
+            sort(Sorts.descending("count"))
+        )
+        val result = collection.aggregate<MongoColumn>(pipeline)
+        return result.toList()
     }
 
 

@@ -7,8 +7,8 @@ class MongoDBDataSourceTest {
 
     @Test
     fun testTestConnection() {
-        val mongoDBDataSource = MongoDBDataSource(MongoConfiguration(database = "gxz", password = "123456"))
+        val mongoDBDataSource = MongoDBDataSource(MongoConfiguration(database = "test_db", password = "admin123"))
         mongoDBDataSource.testConnection()
-        mongoDBDataSource.getTables()
+        println(mongoDBDataSource.getTables())
     }
 }

@@ -6,5 +6,4 @@ package tech.medivh.generate.plugin.mybatisplus
  **/
 class MyBatisPlusGenerateConfig(
     val mainPath: String,
-
     )

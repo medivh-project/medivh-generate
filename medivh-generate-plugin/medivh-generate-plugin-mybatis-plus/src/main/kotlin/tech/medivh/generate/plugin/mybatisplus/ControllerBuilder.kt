@@ -48,7 +48,6 @@ class ControllerBuilder {
     fun build(): String {
         val sb = StringBuilder()
 
-        // 添加类注解
         if (restController) {
             sb.append("@RestController\n")
         } else {
@@ -59,20 +58,17 @@ class ControllerBuilder {
             sb.append("@RequestMapping(\"$requestMapping\")\n")
         }
 
-        // 添加类定义
         sb.append("class $controllerClassName")
         if (superClassName.isNotEmpty()) {
             sb.append(" : $superClassName")
         }
         sb.append(" {\n")
 
-        // 添加服务字段
         if (serviceField.isNotEmpty()) {
             sb.append("    @Autowired\n")
             sb.append("    private lateinit var $serviceField: ${serviceField.capitalize()}Service\n\n")
         }
 
-        // 生成CRUD方法
         if (generateCrud && entityClass.isNotEmpty()) {
             generateCrudMethods(sb)
         }
@@ -83,7 +79,6 @@ class ControllerBuilder {
     }
 
     private fun generateCrudMethods(sb: StringBuilder) {
-        // 添加查询方法
         sb.append(
             """
             @GetMapping("/{id}")

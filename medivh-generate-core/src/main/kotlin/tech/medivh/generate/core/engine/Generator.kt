@@ -51,7 +51,7 @@ object DesktopWriteRule : WriteRule {
     }
 
     private fun getDesktopFolder(): File {
-        val userHome = System.getProperty("user.home") // 获取用户主目录
+        val userHome = System.getProperty("user.home")
         Paths.get(userHome, "Desktop").toFile().let {
             if (!it.exists()) {
                 it.mkdirs()

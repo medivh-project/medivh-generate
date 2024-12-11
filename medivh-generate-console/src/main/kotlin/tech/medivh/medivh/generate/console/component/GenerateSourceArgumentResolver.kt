@@ -8,8 +8,8 @@ import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
+import tech.medivh.generate.core.source.DataSourceFacade
 import tech.medivh.medivh.generate.console.annotation.GenerateSource
-import tech.medivh.medivh.generate.console.core.SourceFacade
 
 class GenerateSourceArgumentResolver(private val sourceManager: SourceManager) : HandlerMethodArgumentResolver {
 
@@ -22,7 +22,7 @@ class GenerateSourceArgumentResolver(private val sourceManager: SourceManager) :
         mavContainer: ModelAndViewContainer?,
         webRequest: NativeWebRequest,
         binderFactory: WebDataBinderFactory?
-    ): SourceFacade {
+    ): DataSourceFacade {
         return sourceManager.getSource()
     }
 

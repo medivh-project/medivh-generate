@@ -4,9 +4,10 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.convertValue
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
+import tech.medivh.generate.core.source.DataSourceFacade
+import tech.medivh.generate.core.source.MySQLDataSource
+import tech.medivh.generate.core.source.MySqlConfiguration
 import tech.medivh.generate.core.source.SourceType
-import tech.medivh.medivh.generate.console.core.MySqlSource
-import tech.medivh.medivh.generate.console.core.SourceFacade
 
 
 /**
@@ -22,8 +23,8 @@ class MySqlDataSourceResolver : DataSourceResolver {
         return SourceType.MYSQL
     }
 
-    override fun resolve(requestJson: Map<String, Any>): SourceFacade {
+    override fun resolve(requestJson: Map<String, Any>): DataSourceFacade {
         val config = objectMapper.convertValue<MySqlConfiguration>(requestJson)
-        return MySqlSource(config)
+        return MySQLDataSource(config)
     }
 }

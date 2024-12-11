@@ -19,13 +19,9 @@ import tech.medivh.generate.core.provider.db.Table
 /**
  * @author gongxuanzhangmelt@gmail.com
  */
-class MongoDBDataSource(configuration: MongoConfiguration) : DataSourceFacade {
+class MongoDBDataSource(private val configuration: MongoConnectionConfiguration) : DataSourceFacade {
 
-    private var client: MongoClient
-
-    private var database: MongoDatabase
-
-    init {
+    private val client: MongoClient by lazy {
         val credential = MongoCredential.createCredential(
             configuration.user,
             "admin",
@@ -37,8 +33,11 @@ class MongoDBDataSource(configuration: MongoConfiguration) : DataSourceFacade {
             .applyToClusterSettings { it.hosts(listOf(serverAddress)) }
             .credential(credential)
             .build()
-        client = MongoClient(MongoClients.create(settings))
-        database = client.getDatabase(configuration.database)
+        MongoClient(MongoClients.create(settings))
+    }
+
+    private val database: MongoDatabase by lazy {
+        client.getDatabase(configuration.database)
     }
 
 
@@ -54,9 +53,27 @@ class MongoDBDataSource(configuration: MongoConfiguration) : DataSourceFacade {
         }.toList()
     }
 
+    /**
+     * Sample 200(configurable) documents from the collection and scan the fields of the documents.
+     * ```js
+     * db.collection.aggregate([
+     *   { $sample: { size: 200 } },
+     *   { $project: { fields: { $objectToArray: "$$ROOT" } } },
+     *   { $unwind: "$fields" },
+     *   { $group: {
+     *       _id: "$fields.k",
+     *       types: { $addToSet: { $type: "$fields.v" } },
+     *       count: { $sum: 1 }
+     *   }},
+     *   { $sort: { count: -1 } }
+     * ]);
+     *
+     * ```
+     */
     private fun scanMongoCollectionDetail(collectionName: String): List<MongoColumn> {
         val collection = database.getCollection<Document>(collectionName)
         val pipeline = listOf(
+            //   todo configuration 200
             sample(200),
             project(Projections.computed("fields", Document("\$objectToArray", ("\$\$ROOT")))),
             unwind("\$fields"),

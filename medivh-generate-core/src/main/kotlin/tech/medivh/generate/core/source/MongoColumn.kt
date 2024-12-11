@@ -14,6 +14,13 @@ data class MongoColumn(
     val types: List<String>? = null,
 ) {
     fun adaptToColum(collection: MongoCollection): Column {
-        return Column(collection.tableName, id, false, id == "_id", types?.joinToString(",") ?: "String", null)
+        return Column(
+            collection.tableName,
+            id,
+            false,
+            id == "_id",
+            types?.joinToString(",") ?: "String",
+            collection.tableName
+        )
     }
 }

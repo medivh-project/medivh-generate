@@ -23,4 +23,9 @@ interface WriteRule {
 
     fun format(): Boolean
 
+    /**
+     * target file to zip file
+     */
+    fun zip(): Boolean
+
 }

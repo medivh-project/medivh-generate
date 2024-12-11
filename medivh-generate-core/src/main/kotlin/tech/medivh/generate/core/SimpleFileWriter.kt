@@ -25,7 +25,6 @@ class SimpleFileWriter(
         StringWriter().use { write ->
             Velocity.evaluate(context, write, template.templateName(), template.readText())
             val targetFile = rule.targetFile(template, context)
-            println(targetFile)
             val finalCode = codeFormatter.format(write.toString(), targetFile)
 
             if (targetFile.exists().not()) {

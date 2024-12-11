@@ -31,7 +31,10 @@
         </el-button>
         <h2>{{ selectedPlugin.title }} 配置</h2>
       </div>
-      <component :is="selectedPlugin.configComponent" />
+      <component 
+        :is="selectedPlugin.configComponent"
+        :plugin-name="selectedPlugin.name"
+      />
     </div>
   </div>
 </template>

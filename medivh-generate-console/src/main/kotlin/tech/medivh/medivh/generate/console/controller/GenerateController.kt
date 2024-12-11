@@ -1,13 +1,19 @@
 package tech.medivh.medivh.generate.console.controller
 
+import org.springframework.core.io.FileSystemResource
+import org.springframework.core.io.Resource
+import org.springframework.http.HttpHeaders
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import tech.medivh.generate.core.provider.db.Table
+import tech.medivh.generate.core.source.DataSourceFacade
 import tech.medivh.generate.core.source.SourceType
 import tech.medivh.medivh.generate.console.annotation.GenerateSource
+import tech.medivh.medivh.generate.console.component.ConsoleModuleLoader
 import tech.medivh.medivh.generate.console.component.DataSourceResolver
 import tech.medivh.medivh.generate.console.component.SourceManager
 import tech.medivh.medivh.generate.console.core.Result
-import tech.medivh.medivh.generate.console.core.SourceFacade
+
 
 /**
  * @author gongxuanzhangmelt@gmail.com
@@ -16,7 +22,8 @@ import tech.medivh.medivh.generate.console.core.SourceFacade
 @RequestMapping("/generate")
 class GenerateController(
     resolver: List<DataSourceResolver>,
-    private val sourceManager: SourceManager
+    private val sourceManager: SourceManager,
+    private val moduleLoader: ConsoleModuleLoader
 ) {
 
     val dataSourceResolverMap = resolver.associateBy { it.support() }
@@ -39,8 +46,28 @@ class GenerateController(
 
 
     @GetMapping("/tables")
-    fun getTable(@GenerateSource sourceFacade: SourceFacade): Result<List<Table>> {
+    fun getTable(@GenerateSource sourceFacade: DataSourceFacade): Result<List<Table>> {
         return Result.success(sourceFacade.getTables())
+    }
+
+    @PostMapping("/generate_all/{pluginName}")
+    fun generateCode(
+        @GenerateSource sourceFacade: DataSourceFacade,
+        @PathVariable(value = "pluginName") pluginName: String
+    ): ResponseEntity<Resource> {
+        val source = sourceManager.getSource()
+        val module =
+            moduleLoader.getModule(pluginName) ?: throw IllegalArgumentException("plugin $pluginName not found")
+        module.setDataSource(source)
+        val zip = module.generateAll()
+
+        if (!zip.exists()) {
+            return ResponseEntity.notFound().build()
+        }
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"${zip.name}\"")
+            .body(FileSystemResource(zip))
+
     }
 
 }

@@ -3,6 +3,7 @@ package tech.medivh.generate.core.engine
 import tech.medivh.generate.core.ContextProvider
 import tech.medivh.generate.core.provider.TemplateProvider
 import tech.medivh.generate.core.source.DataSourceFacade
+import java.io.File
 
 
 /**
@@ -23,8 +24,9 @@ interface GeneratePlugin {
 
     /**
      * generate all file
+     * @return zip file
      */
-    fun generateAll()
+    fun generateAll(): File
 
     /**
      * generate table base file.

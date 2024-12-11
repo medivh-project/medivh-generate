@@ -24,12 +24,12 @@ class ColumnProperties(column: Column) {
     /**
      * sysUser
      */
-    val fieldType = fieldClass.simpleName.convert(NameStyle.CAMEL)
+    val fieldType = fieldClass.simpleName.convert(NameStyle.HUMP)
 
     /**
      * SysUser
      */
-    val fieldtype = fieldClass.simpleName.convert(NameStyle.HUMP)
+    val fieldtype = fieldClass.simpleName.convert(NameStyle.CAMEL)
 
     /**
      * user_name -> UserName

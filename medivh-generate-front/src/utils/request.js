@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { ElMessage } from 'element-plus'
 
 const instance = axios.create({
     baseURL: 'http://localhost:8888/console/api',
@@ -26,6 +27,12 @@ instance.interceptors.request.use(
 
 instance.interceptors.response.use(
     (response) => {
+        // 如果是二进制数据，直接返回
+        if (response.config.responseType === 'blob') {
+            return response.data;
+        }
+
+        // 处理 JSON 响应
         const {data} = response;
         if (data.code === 200) {
             return data.data;
@@ -37,7 +44,7 @@ instance.interceptors.response.use(
     (error) => {
         if (error.response) {
             const {status, data} = error.response;
-            let message
+            let message;
             switch (status) {
                 case 401:
                     message = '未授权，请重新登录';
@@ -71,10 +78,10 @@ const request = {
         return instance.get(url, {params, ...config});
     },
     post(url, data, config = {}) {
-        return instance.post(url, data, {...config});
+        return instance.post(url, data, config);
     },
     put(url, data, config = {}) {
-        return instance.put(url, data, {...config});
+        return instance.put(url, data, config);
     },
     delete(url, params, config = {}) {
         return instance.delete(url, {params, ...config});

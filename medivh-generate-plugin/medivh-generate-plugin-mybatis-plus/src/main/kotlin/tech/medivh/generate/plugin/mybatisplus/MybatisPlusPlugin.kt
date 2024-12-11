@@ -5,6 +5,7 @@ import tech.medivh.generate.core.engine.GeneratePlugin
 import tech.medivh.generate.core.engine.Generator
 import tech.medivh.generate.core.provider.TemplateProvider
 import tech.medivh.generate.core.source.DataSourceFacade
+import java.io.File
 
 
 /**
@@ -14,7 +15,7 @@ class MybatisPlusPlugin : GeneratePlugin {
 
     private val templateProvider = MyBatisPlusTemplateProvider()
 
-    var config: MyBatisPlusGenerateConfig? = null
+    var config: MyBatisPlusGenerateConfig = defaultConfig
 
     private lateinit var dataSourceFacade: DataSourceFacade
 
@@ -31,13 +32,10 @@ class MybatisPlusPlugin : GeneratePlugin {
     }
 
     override fun contextProvider(): ContextProvider {
-        config?.let {
-            return MyBatisPlusContextProvider(it, dataSourceFacade)
-        }
-        return dataSourceFacade
+        return MyBatisPlusContextProvider(config, dataSourceFacade)
     }
 
-    override fun generateAll() {
+    override fun generateAll(): File {
         return Generator(contextProvider(), templateProvider).generate()
     }
 

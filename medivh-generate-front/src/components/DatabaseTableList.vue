@@ -10,7 +10,7 @@
       </el-button>
     </div>
     <el-table
-      :data="tables"
+      :data="currentPageData"
       style="width: 100%"
       @selection-change="handleSelectionChange"
       border
@@ -18,10 +18,6 @@
       highlight-current-row
       class="custom-table"
     >
-      <el-table-column
-          type="selection"
-          width="55">
-      </el-table-column>
       <el-table-column
           prop="tableName"
           label="表名">
@@ -59,14 +55,54 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="pagination-container">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 20, 50, 100]"
+        :total="tables.length"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        layout="total, sizes, prev, pager, next, jumper"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
-import {defineEmits, onMounted, ref} from 'vue'
-import {getTables} from '@/api/db.js'
+import {defineEmits, onMounted, ref, computed} from 'vue'
+import {getTables, generateCode, generateAllCode} from '@/api/db.js'
+import { ElMessage } from 'element-plus'
+
+const props = defineProps({
+  pluginName: {
+    type: String,
+    required: true
+  }
+})
 
 const tables = ref([])
+const currentPage = ref(1)
+const pageSize = ref(10)
+
+// 计算当前页的数据
+const currentPageData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value
+  const end = start + pageSize.value
+  return tables.value.slice(start, end)
+})
+
+// 处理页码改变
+const handleCurrentChange = (val) => {
+  currentPage.value = val
+}
+
+// 处理每页显示数量改变
+const handleSizeChange = (val) => {
+  pageSize.value = val
+  currentPage.value = 1 // 重置到第一页
+}
 
 const emit = defineEmits(['selectionChange', 'generateCode', 'generateAllCode'])
 const selectedTables = ref([])
@@ -87,16 +123,36 @@ const formatDate = (date) => {
   return new Date(date).toLocaleString()
 }
 
-const handleGenerateCode = (row) => {
-  emit('generateCode', row)
+const downloadFile = (blob, fileName) => {
+  console.log(fileName)
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = fileName || 'generated-code.zip' // 默认文件名
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
 }
 
-const handleGenerateAllCode = () => {
-  if (selectedTables.value.length === 0) {
-    ElMessage.warning('请先选择要生成代码的表')
-    return
+const handleGenerateCode = async (row) => {
+  try {
+    const response = await generateCode(props.pluginName, row)
+    downloadFile(response, `${row.tableName}-code.zip`)
+    ElMessage.success('代码生成成功')
+  } catch (error) {
+    ElMessage.error('代码生成失败：' + (error.message || '未知错误'))
   }
-  emit('generateAllCode', selectedTables.value)
+}
+
+const handleGenerateAllCode = async () => {
+  try {
+    const response = await generateAllCode(props.pluginName, tables.value)
+    downloadFile(response, 'all-tables-code.zip')
+    ElMessage.success('批量代码生成成功')
+  } catch (error) {
+    ElMessage.error('批量代码生成失败：' + (error.message || '未知错误'))
+  }
 }
 </script>
 
@@ -145,5 +201,16 @@ const handleGenerateAllCode = () => {
 
 :deep(.el-button--small) {
   padding: 8px 15px;
+}
+
+.pagination-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+:deep(.el-pagination) {
+  padding: 0;
+  margin: 16px 0;
 }
 </style>

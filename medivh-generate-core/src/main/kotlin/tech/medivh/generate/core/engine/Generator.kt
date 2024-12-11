@@ -3,8 +3,11 @@ package tech.medivh.generate.core.engine
 import tech.medivh.generate.core.*
 import tech.medivh.generate.core.env.GeneratorContext
 import tech.medivh.generate.core.provider.TemplateProvider
+import tech.medivh.generate.core.rule.DesktopWriteRule
 import java.io.File
-import java.nio.file.Paths
+import java.io.FileOutputStream
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
 
 
 /**
@@ -17,14 +20,26 @@ class Generator(
 ) {
 
 
-    fun generate() {
+    fun generate(): File {
         val templates = templateProvider.getTemplates()
         val contexts = contextProvider.computeContext()
-        templates.forEach {
-            contexts.forEach { context ->
-                merge(it, context).write()
+        val zip = File("generate","generate-${System.currentTimeMillis()}.zip")
+        zip.parentFile.mkdirs()
+        FileOutputStream(zip).use { fos ->
+            ZipOutputStream(fos).use { zos ->
+                templates.forEach {
+                    contexts.forEach { context ->
+                        val file = merge(it, context).write()
+                        zos.putNextEntry(ZipEntry(file.name))
+                        file.inputStream().use { input ->
+                            input.copyTo(zos)
+                        }
+                        zos.closeEntry()
+                    }
+                }
             }
         }
+        return zip
     }
 
     private fun merge(template: Template, context: GeneratorContext): FileWriter {
@@ -32,33 +47,3 @@ class Generator(
     }
 
 }
-
-object DesktopWriteRule : WriteRule {
-
-    private val desktopDir = getDesktopFolder()
-
-    override fun overwrite(): Boolean {
-        return true
-    }
-
-    override fun targetFile(template: Template, context: GeneratorContext): File {
-        return desktopDir.resolve("${context["className"]}${template.templateName().substringBeforeLast(".")}")
-    }
-
-
-    override fun format(): Boolean {
-        return true
-    }
-
-    private fun getDesktopFolder(): File {
-        val userHome = System.getProperty("user.home")
-        Paths.get(userHome, "Desktop").toFile().let {
-            if (!it.exists()) {
-                it.mkdirs()
-            }
-            return it
-        }
-    }
-
-}
-

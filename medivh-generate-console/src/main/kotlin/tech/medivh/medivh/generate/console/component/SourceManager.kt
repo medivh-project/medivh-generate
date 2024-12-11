@@ -1,7 +1,7 @@
 package tech.medivh.medivh.generate.console.component
 
 import org.springframework.stereotype.Component
-import tech.medivh.medivh.generate.console.core.SourceFacade
+import tech.medivh.generate.core.source.DataSourceFacade
 
 
 /**
@@ -10,17 +10,17 @@ import tech.medivh.medivh.generate.console.core.SourceFacade
 @Component
 class SourceManager {
 
-    private var sourceFacade: SourceFacade? = null
+    private var sourceFacade: DataSourceFacade? = null
 
     /**
      * register source
      * @return source token
      */
-    fun registerSource(sourceFacade: SourceFacade) {
+    fun registerSource(sourceFacade: DataSourceFacade) {
         this.sourceFacade = sourceFacade
     }
 
-    fun getSource(): SourceFacade {
+    fun getSource(): DataSourceFacade {
         return sourceFacade ?: throw IllegalArgumentException("source not found")
     }
 }
